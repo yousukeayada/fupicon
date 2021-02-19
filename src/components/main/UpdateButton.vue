@@ -1,0 +1,33 @@
+<template>
+    <v-btn @click="update(item)" class="blue accent-2">更新</v-btn>
+</template>
+
+<script>
+import firebase from 'firebase'
+
+export default {
+    props: {
+        item: {
+            type: Object,
+            required: true
+        },
+    },
+    methods: {
+        update() {
+            let user = firebase.auth().currentUser;
+            let database = firebase.database();
+
+            database.ref("/users/"+user.uid+"/todo_list").update({
+                [this.item.id]: {
+                    text: this.item.text,
+                    deadline: this.item.deadline,
+                    state: this.item.state,
+                }
+            });
+
+            console.log("update item: "+this.item.text+","+this.item.deadline)
+            this.$emit("dialog-close", false)
+        }
+    }
+}
+</script>

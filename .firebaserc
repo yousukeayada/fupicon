@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "fupicon-b2ceb"
+  },
+  "targets": {
+    "fupicon-b2ceb": {
+      "hosting": {
+        "fupicon": [
+          "fupicon-b2ceb"
+        ]
+      }
+    }
+  }
+}

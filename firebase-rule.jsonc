@@ -1,0 +1,17 @@
+{
+    "rules": {
+      "users": {
+        ".read": "auth !== null",
+        ".write": "auth !== null",
+          
+        "$user_id": {
+          // 何も書かなければ上位の".read"が引き継がれる
+          ".write": "auth.uid === $user_id",
+          "todo_list": {
+            ".read": "auth.uid === $user_id",
+          }
+        }
+      },
+    
+    }
+}
