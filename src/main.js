@@ -13,10 +13,12 @@ var firebaseConfig = {
   projectId: "fupicon-b2ceb",
   storageBucket: "fupicon-b2ceb.appspot.com",
   messagingSenderId: "621070327333",
-  appId: "1:621070327333:web:63bb55318e33e6ae5ba9cc"
+  appId: "1:621070327333:web:63bb55318e33e6ae5ba9cc",
+  measurementId: "G-0Q2W38R9T2"
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
+firebase.analytics();
 
 Vue.config.productionTip = false
 
