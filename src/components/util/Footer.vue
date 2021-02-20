@@ -14,6 +14,9 @@
         cols="12"
       >
         {{ new Date().getFullYear() }} — <strong>FuPicon</strong>
+        <v-btn icon color="github" class="" :href="github" target="_blank">
+          <v-icon>mdi-github</v-icon>
+        </v-btn>
       </v-col>
     </v-row>
   </v-footer>
@@ -21,8 +24,10 @@
 
 <script>
 export default {
-    data: () => ({
-    
-    }),
+    data() {
+      return {
+        github: "https://github.com/yousukeayada/fupicon/",
+      }
+    },
 }
 </script>
