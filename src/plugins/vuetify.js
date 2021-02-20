@@ -22,7 +22,8 @@ export default new Vuetify({
     theme: {
         themes: {
             light: {
-                background: "#F4F5F7"
+                background: "#F4F5F7",
+                github: "#211F1F"
             }
         }
     }
