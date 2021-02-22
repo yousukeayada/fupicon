@@ -26,7 +26,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Install dependencies
-      run: npm install && cd functions && npm install
+      run: npm install && pwd && ls
     - name: Build
       run: npm run build
     - name: Deploy to Firebase Hosting
