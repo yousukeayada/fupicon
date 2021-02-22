@@ -35,9 +35,9 @@ exports.scheduledFunctionCrontab = functions.pubsub.schedule('* 23 * * *')
   .timeZone('Asia/Tokyo') // Users can choose timezone - default is America/Los_Angeles
   .onRun((context) => {
         console.log('This will be run every day at 01:** AM Eastern!');
-        console.log(context)
+        console.log(JSON.stringify(context))
         admin.database().ref(`/users/`).once('value').then((snapshot) => {
-            console.log("users: "+snapshot.key+","+snapshot.val())
+            console.log("users: "+JSON.stringify(snapshot.val()))
         })
         return null;
 });
