@@ -11,7 +11,7 @@ const db = admin.firestore();
 // const gmailPassword = functions.config().gmail.password
 
 
-exports.createUser = functions.auth.user().onCreate(async(userRecord, context) => {
+exports.createUser = functions.region("asia-northeast1").auth.user().onCreate(async(userRecord, context) => {
     const email = userRecord.email;
     const displayName = userRecord.displayName;
     const creationTime = userRecord.metadata.creationTime;
