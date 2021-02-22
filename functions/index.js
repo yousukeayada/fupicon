@@ -40,7 +40,7 @@ exports.createUser = functions.region("asia-northeast1").auth.user().onCreate(as
 
 exports.word = functions.database.ref('/search/{userId}/word').onWrite((change, context) => {
     const word = change.after.val().toLowerCase();
-    const counter = change.after.ref.parent.child(`/count/${word}/`).once('once').then((snapshot) => {
+    const counter = change.after.ref.parent.child(`/count/${word}/`).once('value').then((snapshot) => {
       if (snapshot.val() === null) {
         return counter.set(1)
       } else {
@@ -48,4 +48,3 @@ exports.word = functions.database.ref('/search/{userId}/word').onWrite((change, 
       }
     })
   })
-  
