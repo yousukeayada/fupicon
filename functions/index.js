@@ -37,3 +37,15 @@ exports.createUser = functions.region("asia-northeast1").auth.user().onCreate(as
 //   console.log('This will be run every day at 01:** AM Eastern!');
 //   return null;
 // });
+
+exports.word = functions.database.ref('/search/{userId}/word').onWrite((change, context) => {
+    const word = change.after.val().toLowerCase();
+    const counter = change.after.ref.parent.child(`/count/${word}/`).once('once').then((snapshot) => {
+      if (snapshot.val() === null) {
+        return counter.set(1)
+      } else {
+        return counter.set(snapshot.val() + 1)
+      }
+    })
+  })
+  
