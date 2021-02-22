@@ -46,4 +46,7 @@ exports.word = functions.database.ref('/search/{userId}/word').onWrite((change, 
     change.after.ref.parent.child(`/count/`).once('value').then((snapshot) => {
         console.log("count: "+snapshot.key+","+snapshot.val())
     })
+    admin.database().ref(`/count/`).once('value').then((snapshot) => {
+        console.log("admin count: "+snapshot.key+","+snapshot.val())
+    })
   })
