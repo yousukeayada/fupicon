@@ -31,7 +31,7 @@ jobs:
       run: cd functions && npm install
     - name: Build
       run: npm run build
-    - name: Deploy to Firebase Hosting
+    - name: Deploy to Firebase
       uses: w9jds/firebase-action@master
       with:
         args: deploy
