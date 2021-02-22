@@ -65,3 +65,5 @@ node_modules/
 .env
 
 dist/
+素材/
+out 
