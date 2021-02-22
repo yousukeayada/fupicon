@@ -23,7 +23,7 @@ exports.createUser = functions.region("asia-northeast1").auth.user().onCreate(as
         to: email,
         message: {
           subject: "登録完了",
-          text: "FuPicon へのアカウント登録が完了しました\n"+creationTime,
+          text: "FuPicon へのアカウント登録が完了しました\n\n"+creationTime,
         },
     };
     await db.collection("mail").add(mailData);
