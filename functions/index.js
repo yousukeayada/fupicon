@@ -15,15 +15,16 @@ exports.createUser = functions.region("asia-northeast1").auth.user().onCreate(as
     const email = userRecord.email;
     const displayName = userRecord.displayName;
     const creationTime = userRecord.metadata.creationTime;
+    const creationTime_jst = new Date(creationTime).toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
     console.log("user record: "+JSON.stringify(userRecord))
-    console.log("creation time: "+creationTime)
+    console.log("creation time: "+creationTime_jst)
     console.log(email+","+displayName+","+context.authType)
 
     const mailData = {
         to: email,
         message: {
           subject: "登録完了",
-          text: "FuPicon へのアカウント登録が完了しました\n\n"+creationTime,
+          text: "FuPicon へのアカウント登録が完了しました\n\n"+creationTime_jst,
         },
     };
     await db.collection("mail").add(mailData);
