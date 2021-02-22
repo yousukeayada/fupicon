@@ -31,7 +31,7 @@ exports.createUser = functions.region("asia-northeast1").auth.user().onCreate(as
     await db.collection("mail").add(mailData);
 })
 
-exports.scheduledFunctionCrontab = functions.pubsub.schedule('* 23 * * *')
+exports.scheduledFunctionCrontab = functions.pubsub.schedule('59 * * * *')
   .timeZone('Asia/Tokyo') // Users can choose timezone - default is America/Los_Angeles
   .onRun((context) => {
         console.log('This will be run every day at 01:** AM Eastern!');
