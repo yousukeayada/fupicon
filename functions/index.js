@@ -10,6 +10,7 @@ const db = admin.firestore();
 // const gmailEmail = functions.config().gmail.email
 // const gmailPassword = functions.config().gmail.password
 
+const url = functions.config().project.url
 
 exports.createUser = functions.region("asia-northeast1").auth.user().onCreate(async(userRecord, context) => {
     const email = userRecord.email;
@@ -24,7 +25,7 @@ exports.createUser = functions.region("asia-northeast1").auth.user().onCreate(as
         to: email,
         message: {
           subject: "登録完了",
-          text: "FuPicon へのアカウント登録が完了しました\n\n"+creationTime_jst,
+          text: "FuPicon へのアカウント登録が完了しました\n"+url+"\n\n"+creationTime_jst,
         },
     };
     await db.collection("mail").add(mailData);
