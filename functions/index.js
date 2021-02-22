@@ -31,12 +31,16 @@ exports.createUser = functions.region("asia-northeast1").auth.user().onCreate(as
     await db.collection("mail").add(mailData);
 })
 
-// exports.scheduledFunctionCrontab = functions.pubsub.schedule('* 1 * * *')
-//   .timeZone('Asia/Tokyo') // Users can choose timezone - default is America/Los_Angeles
-//   .onRun((context) => {
-//   console.log('This will be run every day at 01:** AM Eastern!');
-//   return null;
-// });
+exports.scheduledFunctionCrontab = functions.pubsub.schedule('* 23 * * *')
+  .timeZone('Asia/Tokyo') // Users can choose timezone - default is America/Los_Angeles
+  .onRun((context) => {
+        console.log('This will be run every day at 01:** AM Eastern!');
+        console.log(context)
+        admin.database().ref(`/users/`).once('value').then((snapshot) => {
+            console.log("users: "+snapshot.key+","+snapshot.val())
+        })
+        return null;
+});
 
 exports.word = functions.database.ref('/search/{userId}/word').onWrite((change, context) => {
     const key = change.after.key
