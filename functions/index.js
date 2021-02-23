@@ -20,8 +20,9 @@ exports.createUser = functions.region("asia-northeast1").auth.user().onCreate(as
     const creationTime = userRecord.metadata.creationTime;
     const creationTime_jst = new Date(creationTime).toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
     console.log("user record: "+JSON.stringify(userRecord))
+    console.log("context: "+JSON.stringify(context))
     console.log("creation time: "+creationTime_jst)
-    console.log(email+","+displayName+","+context.authType)
+    console.log(email+","+displayName)
 
     const mailData = {
         to: email,
@@ -61,7 +62,7 @@ exports.scheduledFunctionCrontab = functions.pubsub.schedule('* 23 * * *')
             .catch(console.error);
             for(let i=0; i<users.length; i++) {
                 client.channels.cache.get('442243535153004546').send(users[i].id)
-                client.channels.cache.get('442243535153004546').send(users[i].todo_list.text+": "+users[i].todo_list.deadline)
+                client.channels.cache.get('442243535153004546').send(users[i].todo_list)
             }
             //   client.destroy()
         });
