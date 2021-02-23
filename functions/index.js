@@ -1,3 +1,4 @@
+const Discord = require('discord.js');
 const functions = require('firebase-functions');
 
 // The Firebase Admin SDK to access the Firebase Realtime Database. 
@@ -11,6 +12,7 @@ const db = admin.firestore();
 // const gmailPassword = functions.config().gmail.password
 
 const url = functions.config().project.url
+const token = functions.config().discord.token
 
 exports.createUser = functions.region("asia-northeast1").auth.user().onCreate(async(userRecord, context) => {
     const email = userRecord.email;
@@ -31,7 +33,7 @@ exports.createUser = functions.region("asia-northeast1").auth.user().onCreate(as
     await db.collection("mail").add(mailData);
 })
 
-exports.scheduledFunctionCrontab = functions.pubsub.schedule('59 * * * *')
+exports.scheduledFunctionCrontab = functions.pubsub.schedule('* 16 * * *')
   .timeZone('Asia/Tokyo') // Users can choose timezone - default is America/Los_Angeles
   .onRun((context) => {
         console.log('This will be run every day at 01:** AM Eastern!');
@@ -39,6 +41,21 @@ exports.scheduledFunctionCrontab = functions.pubsub.schedule('59 * * * *')
         admin.database().ref(`/users/`).once('value').then((snapshot) => {
             console.log("users: "+JSON.stringify(snapshot.val()))
         })
+
+        const client = new Discord.Client();
+
+        client.on('ready', () => {
+        console.log(`Logged in as ${client.user.tag}!`);
+        client.channels.fetch('442243535153004546')
+        .then(channel => {
+            console.log(channel.name)
+        })
+        .catch(console.error);
+        client.channels.cache.get('442243535153004546').send('hello')
+        //   client.destroy()
+        });
+        client.login(token);
+        
         return null;
 });
 
