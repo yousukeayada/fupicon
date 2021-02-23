@@ -33,9 +33,9 @@ exports.createUser = functions.region("asia-northeast1").auth.user().onCreate(as
     await db.collection("mail").add(mailData);
 })
 
-exports.scheduledFunctionCrontab = functions.pubsub.schedule('* 21 * * *')
-  .timeZone('Asia/Tokyo') // Users can choose timezone - default is America/Los_Angeles
-  .onRun((context) => {
+exports.scheduledFunctionCrontab = functions.pubsub.schedule('* 23 * * *')
+    .timeZone('Asia/Tokyo') // Users can choose timezone - default is America/Los_Angeles
+    .onRun((context) => {
         console.log('This will be run every day at 01:** AM Eastern!');
         console.log(JSON.stringify(context))
         let users = []
@@ -61,6 +61,7 @@ exports.scheduledFunctionCrontab = functions.pubsub.schedule('* 21 * * *')
             .catch(console.error);
             for(let i=0; i<users.length; i++) {
                 client.channels.cache.get('442243535153004546').send(users[i].id)
+                client.channels.cache.get('442243535153004546').send(users[i].todo_list.text+": "+users[i].todo_list.deadline)
             }
             //   client.destroy()
         });
