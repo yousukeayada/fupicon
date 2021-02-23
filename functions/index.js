@@ -80,9 +80,23 @@ exports.sendTodoList = functions.pubsub.schedule('* 2 * * *').timeZone('Asia/Tok
             let user = { id: v, username: val[v].username, todo_list: val[v].todo_list, channel_id: val[v].discord_channel_id }
             users.push(user)
         }
-        for(let i=0; i<users.length; i++) {
-            console.log("channel id: "+users[i].channel_id)
-        }
+        let channel_ids = []
+        client.on('ready', () => {
+            console.log(`Logged in as ${client.user.tag}!`);
+
+            for(let i=0; i<users.length; i++) {
+                console.log("channel id: "+users[i].channel_id)
+                if(users[i].channel_id) {
+                    channel_ids.push(users[i].channel_id)   
+                    
+                    client.channels.cache.get(users[i].channel_id).send(users[i].username+": "+users[i].todo_list)
+                }
+            }
+        });
+        client.login(token);
+
+        
+        
     })
 })
 
