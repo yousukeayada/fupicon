@@ -13,6 +13,7 @@ const db = admin.firestore();
 
 const url = functions.config().project.url
 const token = functions.config().discord.token
+const client = new Discord.Client();
 
 exports.createUser = functions.region("asia-northeast1").auth.user().onCreate(async(userRecord, context) => {
     const email = userRecord.email;
@@ -51,7 +52,6 @@ exports.scheduledFunctionCrontab = functions.pubsub.schedule('* 23 * * *')
             console.log("users: "+users)
         })
 
-        const client = new Discord.Client();
 
         client.on('ready', () => {
             console.log(`Logged in as ${client.user.tag}!`);
@@ -70,6 +70,21 @@ exports.scheduledFunctionCrontab = functions.pubsub.schedule('* 23 * * *')
 
         return null;
 });
+
+exports.sendTodoList = functions.pubsub.schedule('* 2 * * *').timeZone('Asia/Tokyo').onRun((context) => {
+    admin.database().ref(`/users/`).once('value').then((snapshot) => {
+        const key = snapshot.key
+        const val = snapshot.val()
+        for(let v in val) {
+            let channel_id = val[v].get("discord_channel_id")
+            if(channel_id) {
+                console.log(channel_id)
+            }
+            // let user = { id: v, username: val[v].username, todo_list: val[v].todo_list }
+            // users.push(user)
+        }
+    })
+})
 
 exports.word = functions.database.ref('/search/{userId}/word').onWrite((change, context) => {
     const key = change.after.key
