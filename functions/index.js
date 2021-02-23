@@ -13,7 +13,7 @@ const db = admin.firestore();
 
 const url = functions.config().project.url
 const token = functions.config().discord.token
-const client = new Discord.Client();
+
 
 exports.createUser = functions.region("asia-northeast1").auth.user().onCreate(async(userRecord, context) => {
     const email = userRecord.email;
@@ -75,12 +75,16 @@ exports.sendTodoList = functions.pubsub.schedule('* 3 * * *').timeZone('Asia/Tok
     admin.database().ref(`/users/`).once('value').then((snapshot) => {
         const key = snapshot.key
         const val = snapshot.val()
-        
+
+        console.log("remake user object")
         let users = []
         for(let v in val) {
             let user = { id: v, username: val[v].username, todo_list: val[v].todo_list, channel_id: val[v].discord_channel_id }
             users.push(user)
         }
+
+        console.log("send TODO")
+        const client = new Discord.Client();
         // let channel_ids = []
         client.on('ready', () => {
             console.log(`Logged in as ${client.user.tag}!`);
