@@ -71,7 +71,7 @@ exports.scheduledFunctionCrontab = functions.pubsub.schedule('* 23 * * *')
         return null;
 });
 
-exports.sendTodoList = functions.pubsub.schedule('* 3 * * *').timeZone('Asia/Tokyo').onRun((context) => {
+exports.sendTodoList = functions.pubsub.schedule('* 4 * * *').timeZone('Asia/Tokyo').onRun((context) => {
     admin.database().ref(`/users/`).once('value').then((snapshot) => {
         const key = snapshot.key
         const val = snapshot.val()
@@ -94,7 +94,10 @@ exports.sendTodoList = functions.pubsub.schedule('* 3 * * *').timeZone('Asia/Tok
                 if(users[i].channel_id) {
                     // channel_ids.push(users[i].channel_id)   
                     
-                    client.channels.cache.get(users[i].channel_id).send(users[i].username+": "+users[i].todo_list)
+                    client.channels.cache.get(users[i].channel_id).send(users[i].username+": ")
+                    for(let v in users[i].todo_list) {
+                        client.channels.cache.get(users[i].channel_id).send(users[i].todo_list[v].text+","+users[i].todo_list[v].deadline)
+                    }
                 }
             }
         });
