@@ -80,8 +80,8 @@ exports.sendTodoList = functions.pubsub.schedule('* 2 * * *').timeZone('Asia/Tok
             let user = { id: v, username: val[v].username, todo_list: val[v].todo_list, channel_id: val[v].discord_channel_id }
             users.push(user)
         }
-        for(let i=0; i<user.length; i++) {
-            console.log(users[i].channel_id)
+        for(let i=0; i<users.length; i++) {
+            console.log("channel id: "+users[i].channel_id)
         }
     })
 })
