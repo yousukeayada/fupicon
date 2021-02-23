@@ -33,29 +33,31 @@ exports.createUser = functions.region("asia-northeast1").auth.user().onCreate(as
     await db.collection("mail").add(mailData);
 })
 
-exports.scheduledFunctionCrontab = functions.pubsub.schedule('* 16 * * *')
+exports.scheduledFunctionCrontab = functions.pubsub.schedule('* 20 * * *')
   .timeZone('Asia/Tokyo') // Users can choose timezone - default is America/Los_Angeles
   .onRun((context) => {
         console.log('This will be run every day at 01:** AM Eastern!');
         console.log(JSON.stringify(context))
+        let users = null
         admin.database().ref(`/users/`).once('value').then((snapshot) => {
-            console.log("users: "+JSON.stringify(snapshot.val()))
+            users = JSON.stringify(snapshot.val())
+            console.log("users: "+users)
         })
 
         const client = new Discord.Client();
 
         client.on('ready', () => {
-        console.log(`Logged in as ${client.user.tag}!`);
-        client.channels.fetch('442243535153004546')
-        .then(channel => {
-            console.log(channel.name)
-        })
-        .catch(console.error);
-        client.channels.cache.get('442243535153004546').send('hello')
-        //   client.destroy()
+            console.log(`Logged in as ${client.user.tag}!`);
+            client.channels.fetch('442243535153004546')
+            .then(channel => {
+                console.log(channel.name)
+            })
+            .catch(console.error);
+            client.channels.cache.get('442243535153004546').send(users)
+            //   client.destroy()
         });
         client.login(token);
-        
+
         return null;
 });
 
