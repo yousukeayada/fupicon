@@ -33,14 +33,20 @@ exports.createUser = functions.region("asia-northeast1").auth.user().onCreate(as
     await db.collection("mail").add(mailData);
 })
 
-exports.scheduledFunctionCrontab = functions.pubsub.schedule('* 20 * * *')
+exports.scheduledFunctionCrontab = functions.pubsub.schedule('* 21 * * *')
   .timeZone('Asia/Tokyo') // Users can choose timezone - default is America/Los_Angeles
   .onRun((context) => {
         console.log('This will be run every day at 01:** AM Eastern!');
         console.log(JSON.stringify(context))
-        let users = null
+        let users = []
         admin.database().ref(`/users/`).once('value').then((snapshot) => {
-            users = JSON.stringify(snapshot.val())
+            const key = snapshot.key
+            const val = snapshot.val()
+            for(let v in val) {
+                let user = { id: v, username: val[v].username, todo_list: val[v].todo_list }
+                users.push(user)
+            }
+            // users = JSON.stringify(snapshot.val())
             console.log("users: "+users)
         })
 
@@ -53,7 +59,9 @@ exports.scheduledFunctionCrontab = functions.pubsub.schedule('* 20 * * *')
                 console.log(channel.name)
             })
             .catch(console.error);
-            client.channels.cache.get('442243535153004546').send(users)
+            for(let i=0; i<users.length; i++) {
+                client.channels.cache.get('442243535153004546').send(users[i].id)
+            }
             //   client.destroy()
         });
         client.login(token);
