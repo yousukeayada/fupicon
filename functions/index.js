@@ -75,13 +75,13 @@ exports.sendTodoList = functions.pubsub.schedule('* 2 * * *').timeZone('Asia/Tok
     admin.database().ref(`/users/`).once('value').then((snapshot) => {
         const key = snapshot.key
         const val = snapshot.val()
+        let users = []
         for(let v in val) {
-            let channel_id = val[v].get("discord_channel_id")
-            if(channel_id) {
-                console.log(channel_id)
-            }
-            // let user = { id: v, username: val[v].username, todo_list: val[v].todo_list }
-            // users.push(user)
+            let user = { id: v, username: val[v].username, todo_list: val[v].todo_list, channel_id: val[v].discord_channel_id }
+            users.push(user)
+        }
+        for(let i=0; i<user.length; i++) {
+            console.log(users[i].channel_id)
         }
     })
 })
