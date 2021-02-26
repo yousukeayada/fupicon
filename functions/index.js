@@ -108,6 +108,14 @@ exports.sendTodoList = functions.pubsub.schedule('* 4 * * *').timeZone('Asia/Tok
     })
 })
 
+exports.changeChannelId = functions.database.ref('/users/{userId}/discord_channel_id').onWrite((change, context) => {
+    const key = change.after.key
+    const val = change.after.val()
+    console.log("discord_channel_id: "+val)
+    console.log(JSON.stringify(context))
+})
+
+
 exports.word = functions.database.ref('/search/{userId}/word').onWrite((change, context) => {
     const key = change.after.key
     const val = change.after.val()

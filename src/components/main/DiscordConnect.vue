@@ -1,0 +1,75 @@
+<template>
+<div>
+    <!-- <v-btn class="indigo lighten-1" @click.stop="dialog=true">Discord と連携</v-btn> -->
+    <v-list-item @click.stop="dialog=true">
+        <v-list-item-title>Discord と連携</v-list-item-title>
+    </v-list-item>
+
+    <v-dialog v-model="dialog">
+        <v-card class="p-3" dark>
+            <v-card-title>Discord と連携</v-card-title>
+            <v-card-text>
+                指定した Discord チャンネルに毎日12時に TODO を通知します。
+            </v-card-text>
+            <v-card-title>1. Bot を招待する</v-card-title>
+            <v-card-text>
+                以下のボタンより自分のサーバーに Bot を招待してください。これは初めの1回のみ行えば良いです。
+            </v-card-text>
+            <v-card-actions>
+            <v-btn :href="inviteLink" target="_blank">Bot を招待</v-btn>
+            </v-card-actions>
+            <v-card-title>2. チャンネル ID を設定する</v-card-title>
+            <v-card-text>
+                Bot がメッセージを送るテキストチャンネルの ID を設定してください。
+            </v-card-text>
+            <v-text-field type="text" label="ID を入力してください" v-model="channelID" prepend-icon="mdi-identifier" />
+            <v-card-actions>
+                <v-btn @click="setChannelID">設定</v-btn>
+            </v-card-actions>
+            <v-card-title>3. メッセージを確認する</v-card-title>
+            <v-card-text>
+                Bot から指定したチャンネルにメッセージが届くので、確認してください。以降は毎日12時に TODO が通知されます。
+            </v-card-text>
+
+            <v-divider></v-divider>
+
+            <v-card-actions>
+                <v-btn text color="primary" @click.stop="dialog=false">閉じる</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+</div>
+</template>
+
+<script>
+import firebase from 'firebase'
+
+export default {
+    props: {
+        
+    },
+    data() {
+        return {
+            dialog: false,
+            inviteLink: "https://discord.com/api/oauth2/authorize?client_id=813655319796383754&permissions=0&scope=bot",
+            channelID: "",
+        }
+    },
+    methods: {
+        setChannelID() {
+            let self = this
+            let user = firebase.auth().currentUser;
+            if(user) {
+                let database = firebase.database();
+                database.ref("/users/"+user.uid+"/").update({
+                    discord_channel_id: self.channelID
+                });
+                alert("チャンネル ID を設定しました："+self.channelID)
+            } else {
+                alert("サインインしてください")
+                this.$router.push('/signin')
+            }
+        }
+    }
+}
+</script>
