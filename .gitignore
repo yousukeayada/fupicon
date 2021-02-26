@@ -66,4 +66,5 @@ node_modules/
 
 dist/
 素材/
-out 
+functions/out 
+user

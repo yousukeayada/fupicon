@@ -38,8 +38,8 @@ export default {
     created() {
         let user = firebase.auth().currentUser;
         if(user) {
-            let database = firebase.database();  
             let self = this 
+            let database = firebase.database();  
             database.ref("/users/"+user.uid+"/username").once("value", function(data) {
                 self.username = data.val()
             })

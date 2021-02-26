@@ -6,7 +6,7 @@
           </v-card-title>
           <v-card-text>
               <v-form>
-                  <v-text-field type="email" label="メールアドレス" v-model="mailaddress" prepend-icon="mdi-account-circle" />
+                  <v-text-field type="email" label="メールアドレス" v-model="mailaddress" prepend-icon="mdi-email" />
                   <v-text-field v-bind:type="showPassword?'text':'password'" label="パスワード" v-model="password"
                                 prepend-icon="mdi-lock" v-bind:append-icon="showPassword?'mdi-eye':'mdi-eye-off'" 
                                 @click:append="showPassword=!showPassword" />
@@ -17,9 +17,22 @@
               <p>新しいアカウントを作成しますか？
                 <router-link to="/signup">新規登録</router-link>
               </p>
+              
+              <v-btn text color="primary" @click.stop="dialog=true">パスワードを再設定する</v-btn>
           </v-card-text>
-          
       </v-card>
+
+      <v-dialog v-model="dialog">
+          <v-card class="p-3">
+                <v-card-title>パスワードを再設定する</v-card-title>
+                <v-card-text>再設定メールを送るアドレスを入力してください</v-card-text>
+                <v-text-field type="email" label="メールアドレス" v-model="mailaddress" prepend-icon="mdi-email" />
+                <v-card-actions>
+                    <v-btn @click.stop="dialog=false">閉じる</v-btn>
+                    <v-btn @click="sendPasswordResetEmail" color="primary">送信</v-btn>
+                </v-card-actions>
+          </v-card>
+      </v-dialog>
   </div>
 </template>
 
@@ -32,6 +45,7 @@ export default {
             mailaddress: "",
             password: "",
             showPassword: false,
+            dialog: false,
         }
     },
     methods: {
@@ -47,6 +61,14 @@ export default {
                     alert(err.message)
                 }
             )
+        },
+        sendPasswordResetEmail() {
+            let auth = firebase.auth();
+            auth.sendPasswordResetEmail(this.mailaddress).then(function() {
+                alert("メールを送信しました")
+            }).catch(function(error) {
+                alert(error)
+            });
         }
     }
 }
