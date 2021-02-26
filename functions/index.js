@@ -53,25 +53,10 @@ exports.scheduledFunctionCrontab = functions.pubsub.schedule('* 23 * * *')
         })
 
 
-        client.on('ready', () => {
-            console.log(`Logged in as ${client.user.tag}!`);
-            client.channels.fetch('442243535153004546')
-            .then(channel => {
-                console.log(channel.name)
-            })
-            .catch(console.error);
-            for(let i=0; i<users.length; i++) {
-                client.channels.cache.get('442243535153004546').send(users[i].id)
-                client.channels.cache.get('442243535153004546').send(users[i].todo_list)
-            }
-            //   client.destroy()
-        });
-        client.login(token);
-
         return null;
 });
 
-exports.sendTodoList = functions.pubsub.schedule('* 4 * * *').timeZone('Asia/Tokyo').onRun((context) => {
+exports.sendTodoList = functions.pubsub.schedule('* 1 * * *').timeZone('Asia/Tokyo').onRun((context) => {
     admin.database().ref(`/users/`).once('value').then((snapshot) => {
         const key = snapshot.key
         const val = snapshot.val()
@@ -95,9 +80,12 @@ exports.sendTodoList = functions.pubsub.schedule('* 4 * * *').timeZone('Asia/Tok
                     // channel_ids.push(users[i].channel_id)   
                     
                     client.channels.cache.get(users[i].channel_id).send(users[i].username+": ")
+                    let msg = "[定期通知]\n- 未完のタスク\n"
                     for(let v in users[i].todo_list) {
-                        client.channels.cache.get(users[i].channel_id).send(users[i].todo_list[v].text+","+users[i].todo_list[v].deadline)
+                        if(users[i].todo_list[v].state === 0)
+                            msg += users[i].todo_list[v].text + "（" + users[i].todo_list[v].deadline + "）\n"
                     }
+                    client.channels.cache.get(users[i].channel_id).send(msg)
                 }
             }
         });
@@ -108,12 +96,12 @@ exports.sendTodoList = functions.pubsub.schedule('* 4 * * *').timeZone('Asia/Tok
     })
 })
 
-exports.changeChannelId = functions.database.ref('/users/{userId}/discord_channel_id').onWrite((change, context) => {
+exports.changeChannelId = functions.database.ref('/users/{userId}/discord_channel_id').onWrite(async(change, context) => {
     const key = change.after.key
     const val = change.after.val()
     const user_id = context.params.userId
     let username = ""
-    admin.database().ref(`/users/${user_id}/username`).once("value").then(async(snapshot) => {
+    await admin.database().ref(`/users/${user_id}/username`).once("value").then(async(snapshot) => {
         username = await snapshot.val();
     });
     console.log("user_id: "+user_id)
