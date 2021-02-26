@@ -112,7 +112,7 @@ exports.changeChannelId = functions.database.ref('/users/{userId}/discord_channe
     const key = change.after.key
     const val = change.after.val()
     const user_id = context.params.userId
-    const username = ""
+    let username = ""
     admin.database().ref(`/users/${user_id}/username`).once("value").then((snapshot) => {
         username = snapshot.val()
     })
