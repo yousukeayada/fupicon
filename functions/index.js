@@ -112,7 +112,14 @@ exports.changeChannelId = functions.database.ref('/users/{userId}/discord_channe
     const key = change.after.key
     const val = change.after.val()
     console.log("discord_channel_id: "+val)
-    console.log(JSON.stringify(context))
+
+    const client = new Discord.Client();
+    client.on('ready', () => {
+        console.log(`Logged in as ${client.user.tag}!`);
+
+        client.channels.cache.get(val).send(context.params.userId)
+    });
+    client.login(token);
 })
 
 
