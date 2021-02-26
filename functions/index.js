@@ -56,7 +56,7 @@ exports.scheduledFunctionCrontab = functions.pubsub.schedule('0 * * * *')
         return null;
 });
 
-exports.sendTodoList = functions.pubsub.schedule('* 1 * * *').timeZone('Asia/Tokyo').onRun((context) => {
+exports.sendTodoList = functions.pubsub.schedule('0 12 * * *').timeZone('Asia/Tokyo').onRun((context) => {
     admin.database().ref(`/users/`).once('value').then((snapshot) => {
         const key = snapshot.key
         const val = snapshot.val()
