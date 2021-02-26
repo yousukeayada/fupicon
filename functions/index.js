@@ -111,16 +111,18 @@ exports.sendTodoList = functions.pubsub.schedule('* 4 * * *').timeZone('Asia/Tok
 exports.changeChannelId = functions.database.ref('/users/{userId}/discord_channel_id').onWrite((change, context) => {
     const key = change.after.key
     const val = change.after.val()
+    const user_id = context.params.userId
+    const username = ""
+    admin.database().ref(`/users/${user_id}/username`).once("value").then((snapshot) => {
+        username = snapshot.val()
+    })
+    console.log("user_id: "+user_id)
+    console.log("username: "+username)
     console.log("discord_channel_id: "+val)
 
     const client = new Discord.Client();
     client.on('ready', () => {
         console.log(`Logged in as ${client.user.tag}!`);
-
-        const user_id = context.params.userId
-        admin.database().ref(`/users/${user_id}/username`).once("value").then((snapshot) => {
-            const username = snapshot.val()
-        })
 
         const channel = client.channels.cache.get(val)
         channel.send(`[確認]\n${username} さん\nこちらのチャンネル「${channel.name}」にTODOを通知します`)

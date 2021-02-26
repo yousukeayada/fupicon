@@ -1,7 +1,7 @@
 <template>
 <div>
     <!-- <v-btn class="indigo lighten-1" @click.stop="dialog=true">Discord と連携</v-btn> -->
-    <v-list-item @click.stop="dialog=true">
+    <v-list-item @click.stop="openDialog">
         <v-list-item-title>Discord と連携</v-list-item-title>
     </v-list-item>
 
@@ -22,9 +22,9 @@
             <v-card-text>
                 Bot がメッセージを送るテキストチャンネルの ID を設定してください。
             </v-card-text>
-            <v-text-field type="text" label="ID を入力してください" v-model="channelID" prepend-icon="mdi-identifier" />
+            <v-text-field type="text" label="チャンネル ID" v-model="channelId" prepend-icon="mdi-identifier" />
             <v-card-actions>
-                <v-btn @click="setChannelID">設定</v-btn>
+                <v-btn @click="setChannelId">設定</v-btn>
             </v-card-actions>
             <v-card-title>3. メッセージを確認する</v-card-title>
             <v-card-text>
@@ -52,22 +52,36 @@ export default {
         return {
             dialog: false,
             inviteLink: "https://discord.com/api/oauth2/authorize?client_id=813655319796383754&permissions=0&scope=bot",
-            channelID: "",
+            channelId: "",
         }
     },
     methods: {
-        setChannelID() {
+        openDialog() {
+            let self = this
+            let user = firebase.auth().currentUser;
+            if(user) {
+                let database = firebase.database();
+                database.ref("/users/"+user.uid+"/discord_channel_id").once("value").then((snapshot) => {
+                    self.channelId = snapshot.val()
+                })
+                self.dialog = true
+            } else {
+                alert("サインインしてください")
+                // this.$router.push('/signin')
+            }
+        },
+        setChannelId() {
             let self = this
             let user = firebase.auth().currentUser;
             if(user) {
                 let database = firebase.database();
                 database.ref("/users/"+user.uid+"/").update({
-                    discord_channel_id: self.channelID
+                    discord_channel_id: self.channelId
                 });
-                alert("チャンネル ID を設定しました："+self.channelID)
+                alert("チャンネル ID を設定しました："+self.channelId)
             } else {
                 alert("サインインしてください")
-                this.$router.push('/signin')
+                // this.$router.push('/signin')
             }
         }
     }
