@@ -117,7 +117,13 @@ exports.changeChannelId = functions.database.ref('/users/{userId}/discord_channe
     client.on('ready', () => {
         console.log(`Logged in as ${client.user.tag}!`);
 
-        client.channels.cache.get(val).send(context.params.userId)
+        const user_id = context.params.userId
+        admin.database().ref(`/users/${user_id}/username`).once("value").then((snapshot) => {
+            const username = snapshot.val()
+        })
+
+        const channel = client.channels.cache.get(val)
+        channel.send(`[確認]\n${username} さん\nこちらのチャンネル「${channel.name}」にTODOを通知します`)
     });
     client.login(token);
 })
