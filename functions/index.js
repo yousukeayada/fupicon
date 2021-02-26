@@ -35,10 +35,10 @@ exports.createUser = functions.region("asia-northeast1").auth.user().onCreate(as
     await db.collection("mail").add(mailData);
 })
 
-exports.scheduledFunctionCrontab = functions.pubsub.schedule('* 23 * * *')
+exports.scheduledFunctionCrontab = functions.pubsub.schedule('0 * * * *')
     .timeZone('Asia/Tokyo') // Users can choose timezone - default is America/Los_Angeles
     .onRun((context) => {
-        console.log('This will be run every day at 01:** AM Eastern!');
+        console.log('This will be run every day at **:00!');
         console.log(JSON.stringify(context))
         let users = []
         admin.database().ref(`/users/`).once('value').then((snapshot) => {
@@ -70,15 +70,13 @@ exports.sendTodoList = functions.pubsub.schedule('* 1 * * *').timeZone('Asia/Tok
 
         console.log("send TODO")
         const client = new Discord.Client();
-        // let channel_ids = []
         client.on('ready', () => {
             console.log(`Logged in as ${client.user.tag}!`);
 
             for(let i=0; i<users.length; i++) {
-                console.log("channel id: "+users[i].channel_id)
+                console.log(users[i].username+", "+users[i].channel_id)
                 if(users[i].channel_id) {
-                    // channel_ids.push(users[i].channel_id)   
-                    
+                    // メッセージ作成＆送信
                     let msg = "**[定期通知]**\n"+users[i].username+" さん\n- 未完のタスク\n"
                     for(let v in users[i].todo_list) {
                         if(users[i].todo_list[v].state === 0)
@@ -89,8 +87,6 @@ exports.sendTodoList = functions.pubsub.schedule('* 1 * * *').timeZone('Asia/Tok
             }
         });
         client.login(token);
-
-        
         
     })
 })
