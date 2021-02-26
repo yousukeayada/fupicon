@@ -113,9 +113,9 @@ exports.changeChannelId = functions.database.ref('/users/{userId}/discord_channe
     const val = change.after.val()
     const user_id = context.params.userId
     let username = ""
-    admin.database().ref(`/users/${user_id}/username`).once("value").then((snapshot) => {
-        username = snapshot.val()
-    })
+    admin.database().ref(`/users/${user_id}/username`).once("value").then(async(snapshot) => {
+        username = await snapshot.val();
+    });
     console.log("user_id: "+user_id)
     console.log("username: "+username)
     console.log("discord_channel_id: "+val)
@@ -125,7 +125,7 @@ exports.changeChannelId = functions.database.ref('/users/{userId}/discord_channe
         console.log(`Logged in as ${client.user.tag}!`);
 
         const channel = client.channels.cache.get(val)
-        channel.send(`[確認]\n${username} さん\nこちらのチャンネル「${channel.name}」にTODOを通知します`)
+        channel.send(`[確認メッセージ]\n${username} さん\nこちらのチャンネル「${channel.name}」にTODOを通知します`)
     });
     client.login(token);
 })
