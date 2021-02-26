@@ -79,8 +79,7 @@ exports.sendTodoList = functions.pubsub.schedule('* 1 * * *').timeZone('Asia/Tok
                 if(users[i].channel_id) {
                     // channel_ids.push(users[i].channel_id)   
                     
-                    client.channels.cache.get(users[i].channel_id).send(users[i].username+": ")
-                    let msg = "[定期通知]\n- 未完のタスク\n"
+                    let msg = "**[定期通知]**\n"+users[i].username+" さん\n- 未完のタスク\n"
                     for(let v in users[i].todo_list) {
                         if(users[i].todo_list[v].state === 0)
                             msg += users[i].todo_list[v].text + "（" + users[i].todo_list[v].deadline + "）\n"
@@ -113,7 +112,7 @@ exports.changeChannelId = functions.database.ref('/users/{userId}/discord_channe
         console.log(`Logged in as ${client.user.tag}!`);
 
         const channel = client.channels.cache.get(val)
-        channel.send(`[確認メッセージ]\n${username} さん\nこちらのチャンネル「${channel.name}」にTODOを通知します`)
+        channel.send(`**[確認メッセージ]**\n${username} さん\nこちらのチャンネル「${channel.name}」にTODOを通知します`)
     });
     client.login(token);
 })
