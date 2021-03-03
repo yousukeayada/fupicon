@@ -70,19 +70,28 @@ exports.sendTodoList = functions.pubsub.schedule('0 12 * * *').timeZone('Asia/To
 
         console.log("send TODO")
         const client = new Discord.Client();
-        client.on('ready', () => {
+        client.on('ready', async() => {
             console.log(`Logged in as ${client.user.tag}!`);
 
             for(let i=0; i<users.length; i++) {
-                console.log(users[i].username+", "+users[i].channel_id)
-                if(users[i].channel_id) {
+                let username = users[i].username;
+                let channel_id = users[i].channel_id;
+                console.log(username+", "+channel_id);
+                if(channel_id) {
                     // メッセージ作成＆送信
-                    let msg = "**[定期通知]**\n"+users[i].username+" さん\n- 未完のタスク\n"
+                    let msg = "";
+                    let channel = client.channels.cache.get(channel_id);
+                    let owner_id = channel.guild.ownerID;
+                    await client.users.fetch(owner_id).then(user => {
+                        console.log(user.tag);
+                        msg += user.tag + "\n";
+                    });
+                    msg += "**[定期通知]**\n"+username+" さん\n- 未完のタスク\n";
                     for(let v in users[i].todo_list) {
                         if(users[i].todo_list[v].state === 0)
                             msg += users[i].todo_list[v].text + "（" + users[i].todo_list[v].deadline + "）\n"
                     }
-                    client.channels.cache.get(users[i].channel_id).send(msg)
+                    client.channels.cache.get(users[i].channel_id).send(msg);
                 }
             }
         });
