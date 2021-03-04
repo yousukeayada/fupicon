@@ -84,7 +84,7 @@ exports.sendTodoList = functions.pubsub.schedule('0 12 * * *').timeZone('Asia/To
                     let owner_id = channel.guild.ownerID;
                     await client.users.fetch(owner_id).then(user => {
                         console.log(user.tag);
-                        msg += "@" + user.tag + "\n";
+                        msg += "@" + user.displayName + "\n";
                     });
                     msg += "**[定期通知]**\n"+username+" さん\n- 未完のタスク\n";
                     for(let v in users[i].todo_list) {
@@ -121,7 +121,7 @@ exports.changeChannelId = functions.database.ref('/users/{userId}/discord_channe
         const owner_id = channel.guild.ownerID;
         await client.users.fetch(owner_id).then(user => {
             console.log(user.tag);
-            msg += "@" + user.tag + "\n";
+            msg += "@" + user.displayName + "\n";
         });
         msg += `**[確認メッセージ]**\n${username} さん\nこちらのチャンネル「${channel.name}」にTODOを通知します`;
         channel.send(msg);
