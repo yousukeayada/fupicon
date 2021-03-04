@@ -84,14 +84,14 @@ exports.sendTodoList = functions.pubsub.schedule('0 12 * * *').timeZone('Asia/To
                     let owner_id = channel.guild.ownerID;
                     await client.users.fetch(owner_id).then(user => {
                         console.log(user.tag);
-                        msg += user.tag + "\n";
+                        msg += "@" + user.tag + "\n";
                     });
                     msg += "**[定期通知]**\n"+username+" さん\n- 未完のタスク\n";
                     for(let v in users[i].todo_list) {
                         if(users[i].todo_list[v].state === 0)
                             msg += users[i].todo_list[v].text + "（" + users[i].todo_list[v].deadline + "）\n"
                     }
-                    client.channels.cache.get(users[i].channel_id).send(msg);
+                    client.channels.cache.get(channel_id).send(msg);
                 }
             }
         });
