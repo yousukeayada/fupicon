@@ -22,6 +22,7 @@
             <v-card-text>
                 Bot がメッセージを送るテキストチャンネルの ID を設定してください。
             </v-card-text>
+            <v-img width="200" class="mx-auto" src="https://yousukeayada.github.io/general/assets/img/fupicon/discord2.png"></v-img>
             <v-text-field type="text" label="チャンネル ID" v-model="channelId" prepend-icon="mdi-identifier" />
             <v-card-actions>
                 <v-btn @click="setChannelId">設定</v-btn>
