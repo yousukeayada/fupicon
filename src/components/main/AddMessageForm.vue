@@ -1,6 +1,6 @@
 <template>
 <v-form>
-    <v-text-field type="text" label="テキストを入力してください" v-model="text" prepend-icon="mdi-text" />
+    <v-text-field type="text" label="TODO" v-model="text" prepend-icon="mdi-text" />
   
     <!-- <input type="date" v-model="deadline" /><br> -->
     <DatePicker v-model="deadline"></DatePicker>
@@ -33,15 +33,21 @@ export default {
             console.log(this.deadline)
         },
         addTodo() {
-            let user = firebase.auth().currentUser;
-            let database = firebase.database();
-            // if(!this.deadline) this.deadline = "no deadline"
-            if(!this.deadline) this.deadline = ""
-            database.ref("/users/"+user.uid+"/todo_list").push({
-                text: this.text,
-                deadline: this.deadline,
-                state: 0,
-            });
+            if(!this.text) {
+                alert("TODO を入力してください");
+            } else {
+                let user = firebase.auth().currentUser;
+                let database = firebase.database();
+                // if(!this.deadline) this.deadline = "no deadline"
+                if(!this.deadline) this.deadline = ""
+                database.ref("/users/"+user.uid+"/todo_list").push({
+                    text: this.text,
+                    deadline: this.deadline,
+                    state: 0,
+                });
+                // this.text = "";
+                // this.deadline = null;
+            }
         }
     }
 }
