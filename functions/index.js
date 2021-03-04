@@ -113,11 +113,18 @@ exports.changeChannelId = functions.database.ref('/users/{userId}/discord_channe
     console.log("discord_channel_id: "+val)
 
     const client = new Discord.Client();
-    client.on('ready', () => {
+    client.on('ready', async() => {
         console.log(`Logged in as ${client.user.tag}!`);
 
-        const channel = client.channels.cache.get(val)
-        channel.send(`**[確認メッセージ]**\n${username} さん\nこちらのチャンネル「${channel.name}」にTODOを通知します`)
+        let msg = "";
+        const channel = client.channels.cache.get(val);
+        const owner_id = channel.guild.ownerID;
+        await client.users.fetch(owner_id).then(user => {
+            console.log(user.tag);
+            msg += "@" + user.tag + "\n";
+        });
+        msg += `**[確認メッセージ]**\n${username} さん\nこちらのチャンネル「${channel.name}」にTODOを通知します`;
+        channel.send(msg);
     });
     client.login(token);
 })
