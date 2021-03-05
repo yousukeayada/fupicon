@@ -86,10 +86,11 @@ exports.sendTodoList = functions.pubsub.schedule('0 12 * * *').timeZone('Asia/To
                         console.log(user.tag);
                         msg += "<@" + owner_id + ">\n";
                     });
-                    msg += "**[定期通知]**\n"+username+" さん\n- 未完のタスク\n";
-                    for(let v in users[i].todo_list) {
-                        if(users[i].todo_list[v].state === 0)
-                            msg += users[i].todo_list[v].text + "（" + users[i].todo_list[v].deadline + "）\n"
+                    msg += "**[定期通知]**\n"+username+" さん\n- 未完了のタスク\n";
+                    let todo_list = users[i].todo_list;
+                    for(let v in todo_list) {
+                        if(todo_list[v].state === 0)
+                            msg += todo_list[v].text + "（" + todo_list[v].deadline + "）\n"
                     }
                     client.channels.cache.get(channel_id).send(msg);
                 }
