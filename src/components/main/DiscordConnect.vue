@@ -31,6 +31,7 @@
             <v-card-text>
                 Bot から指定したチャンネルにメッセージが届くので、確認してください。以降は毎日12時に TODO が通知されます。
             </v-card-text>
+            <v-img width="300" class="mx-auto" src="https://yousukeayada.github.io/general/assets/img/fupicon/discord3.png"></v-img>
 
             <v-divider></v-divider>
 
