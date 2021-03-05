@@ -12,7 +12,7 @@
                                 prepend-icon="mdi-lock" v-bind:append-icon="showPassword?'mdi-eye':'mdi-eye-off'" 
                                 @click:append="showPassword=!showPassword" />
                   <v-card-actions>
-                      <v-btn @click="signUp" class="info">登録</v-btn>
+                      <v-btn @click="signUp" class="info" :loading="loading">登録</v-btn>
                   </v-card-actions>
               </v-form>
               <p>既にアカウントを持っている方：
@@ -30,32 +30,41 @@ import firebase from 'firebase'
 export default {
   name: 'Signup',
   data () {
-    return {
-      username: "",
-      mailaddress: '',
-      password: '',
-      showPassword: false,
-    }
+      return {
+          username: "",
+          mailaddress: '',
+          password: '',
+          showPassword: false,
+          loader: null,
+          loading: false,
+      }
   },
   methods: {
-    signUp() {
-      let database = firebase.database()
-      firebase.auth().createUserWithEmailAndPassword(this.mailaddress, this.password)
-        .then(result => {
-          console.log(result.user)
-          database.ref("/users/").update({
-            [result.user.uid]: {
-              username: this.username,
-            }
-          });
-          alert('アカウントを作成しました: ', this.username)
-          this.$router.push('/')
-        })
-        .catch(error => {
-          alert(error.code+": "+error.message)
-        })
-
-    }
+      signUp() {
+          this.loader = "loading";
+          let database = firebase.database()
+          firebase.auth().createUserWithEmailAndPassword(this.mailaddress, this.password)
+              .then(result => {
+                  console.log(result.user)
+                  database.ref("/users/").update({
+                      [result.user.uid]: {
+                        username: this.username,
+                      }
+                  });
+                  alert('アカウントを作成しました: ', this.username)
+                  this.$router.push('/')
+              })
+              .catch(error => {
+                  alert(error.code+": "+error.message)
+              })
+      }
+  },
+  watch: {
+      loader() {
+          const l = this.loader;
+          this[l] = !this[l];
+          this.loader = null;
+      }
   }
 }
 </script>
