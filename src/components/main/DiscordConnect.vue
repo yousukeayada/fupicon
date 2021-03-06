@@ -11,6 +11,7 @@
             <v-card-text>
                 指定した Discord チャンネルに毎日12時に TODO を通知します。
             </v-card-text>
+            <v-img width="300" class="mx-auto" src="https://yousukeayada.github.io/general/assets/img/fupicon/discord.png"></v-img>
             <v-card-title>1. Bot を招待する</v-card-title>
             <v-card-text>
                 以下のボタンより自分のサーバーに Bot を招待してください。これは初めの1回のみ行えば良いです。
