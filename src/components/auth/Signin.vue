@@ -62,10 +62,10 @@ export default {
                     this.$router.push('/')
                 },
                 err => {
+                    this.loader = "loading";
                     alert(err.message)
                 }
             )
-            this.loader = "loading";
         },
         sendPasswordResetEmail() {
             let auth = firebase.auth();
