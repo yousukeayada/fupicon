@@ -6,12 +6,13 @@
           </v-card-title>
           <v-card-text>
               <v-form>
-                  <v-text-field type="email" label="メールアドレス" v-model="mailaddress" prepend-icon="mdi-email" />
+                  <v-text-field type="email" label="メールアドレス" v-model="mailaddress" prepend-icon="mdi-email"
+                                 />
                   <v-text-field v-bind:type="showPassword?'text':'password'" label="パスワード" v-model="password"
                                 prepend-icon="mdi-lock" v-bind:append-icon="showPassword?'mdi-eye':'mdi-eye-off'" 
-                                @click:append="showPassword=!showPassword" />
+                                @click:append="showPassword=!showPassword" v-on:keyup.enter="signIn" />
                   <v-card-actions>
-                      <v-btn @click="signIn" class="info">サインイン</v-btn>
+                      <v-btn @click="signIn" class="info" :loading="loading">サインイン</v-btn>
                   </v-card-actions>
               </v-form>
               <p>新しいアカウントを作成しますか？
@@ -46,21 +47,25 @@ export default {
             password: "",
             showPassword: false,
             dialog: false,
+            loader: null,
+            loading: false,
         }
     },
     methods: {
         signIn() {
+            this.loader = "loading";
             firebase.auth().signInWithEmailAndPassword(this.mailaddress, this.password)
             .then(
                 user => { // eslint-disable-line no-unused-vars
                     // console.log(user)
-                    alert('サインインに成功しました')
+                    // alert('サインインに成功しました')
                     this.$router.push('/')
                 },
                 err => {
                     alert(err.message)
                 }
             )
+            this.loader = "loading";
         },
         sendPasswordResetEmail() {
             let auth = firebase.auth();
@@ -69,6 +74,13 @@ export default {
             }).catch(function(error) {
                 alert(error)
             });
+        }
+    },
+    watch: {
+        loader() {
+            const l = this.loader;
+            this[l] = !this[l];
+            this.loader = null;
         }
     }
 }

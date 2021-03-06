@@ -14,7 +14,7 @@
         cols="12"
       >
         {{ new Date().getFullYear() }} — <strong>FuPicon</strong>
-        <v-btn icon color="github" class="" :href="github" target="_blank">
+        <v-btn id="github" icon color="github" :href="github" target="_blank">
           <v-icon>mdi-github</v-icon>
         </v-btn>
       </v-col>
@@ -31,3 +31,9 @@ export default {
     },
 }
 </script>
+
+<style scoped>
+#github {
+  text-decoration: none;
+}
+</style>

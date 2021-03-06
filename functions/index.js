@@ -70,19 +70,29 @@ exports.sendTodoList = functions.pubsub.schedule('0 12 * * *').timeZone('Asia/To
 
         console.log("send TODO")
         const client = new Discord.Client();
-        client.on('ready', () => {
+        client.on('ready', async() => {
             console.log(`Logged in as ${client.user.tag}!`);
 
             for(let i=0; i<users.length; i++) {
-                console.log(users[i].username+", "+users[i].channel_id)
-                if(users[i].channel_id) {
+                let username = users[i].username;
+                let channel_id = users[i].channel_id;
+                console.log(username+", "+channel_id);
+                if(channel_id) {
                     // メッセージ作成＆送信
-                    let msg = "**[定期通知]**\n"+users[i].username+" さん\n- 未完のタスク\n"
-                    for(let v in users[i].todo_list) {
-                        if(users[i].todo_list[v].state === 0)
-                            msg += users[i].todo_list[v].text + "（" + users[i].todo_list[v].deadline + "）\n"
+                    let msg = "";
+                    let channel = client.channels.cache.get(channel_id);
+                    let owner_id = channel.guild.ownerID;
+                    await client.users.fetch(owner_id).then(user => {
+                        console.log(user.tag);
+                        msg += "<@" + owner_id + ">\n";
+                    });
+                    msg += "**[定期通知]**\n"+username+" さん\n- 未完了のタスク\n";
+                    let todo_list = users[i].todo_list;
+                    for(let v in todo_list) {
+                        if(todo_list[v].state === 0)
+                            msg += todo_list[v].text + "（" + todo_list[v].deadline + "）\n"
                     }
-                    client.channels.cache.get(users[i].channel_id).send(msg)
+                    client.channels.cache.get(channel_id).send(msg);
                 }
             }
         });
@@ -104,11 +114,18 @@ exports.changeChannelId = functions.database.ref('/users/{userId}/discord_channe
     console.log("discord_channel_id: "+val)
 
     const client = new Discord.Client();
-    client.on('ready', () => {
+    client.on('ready', async() => {
         console.log(`Logged in as ${client.user.tag}!`);
 
-        const channel = client.channels.cache.get(val)
-        channel.send(`**[確認メッセージ]**\n${username} さん\nこちらのチャンネル「${channel.name}」にTODOを通知します`)
+        let msg = "";
+        const channel = client.channels.cache.get(val);
+        const owner_id = channel.guild.ownerID;
+        await client.users.fetch(owner_id).then(user => {
+            console.log(user.tag);
+            msg += "<@" + owner_id + ">\n";
+        });
+        msg += `**[確認メッセージ]**\n${username} さん\nこちらのチャンネル「${channel.name}」にTODOを通知します`;
+        channel.send(msg);
     });
     client.login(token);
 })
