@@ -92,6 +92,7 @@ exports.sendTodoList = functions.pubsub.schedule('0 12 * * *').timeZone('Asia/To
                         if(todo_list[v].state === 0)
                             msg += todo_list[v].text + "（" + todo_list[v].deadline + "）\n"
                     }
+                    msg += url;
                     client.channels.cache.get(channel_id).send(msg);
                 }
             }
@@ -124,7 +125,8 @@ exports.changeChannelId = functions.database.ref('/users/{userId}/discord_channe
             console.log(user.tag);
             msg += "<@" + owner_id + ">\n";
         });
-        msg += `**[確認メッセージ]**\n${username} さん\nこちらのチャンネル「${channel.name}」にTODOを通知します`;
+        msg += `**[確認メッセージ]**\n${username} さん\nこちらのチャンネル「${channel.name}」にTODOを通知します\n`;
+        msg += url;
         channel.send(msg);
     });
     client.login(token);

@@ -33,7 +33,7 @@
             <v-card-title>アカウントを削除しますか？</v-card-title>
             <v-card-actions>
                 <v-btn @click.stop="deleteDialog=false">キャンセル</v-btn>
-                <v-btn @click="deleteUser" class="red accent-2">削除</v-btn>
+                <v-btn @click="deleteUser" class="red accent-2" :loading="loading">削除</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -50,6 +50,8 @@ export default {
             deleteDialog: false,
             username: "",
             mailaddress: "",
+            loader: null,
+            loading: false,
         }
     },
     created() {
@@ -93,6 +95,7 @@ export default {
             this.deleteDialog = true
         },
         deleteUser() {
+            this.loader = "loading";
             let self = this
             let user = firebase.auth().currentUser;
             if(user) {
@@ -107,8 +110,16 @@ export default {
             } else {
                 alert("サインインしてください")
             }
+            this.loader = "loading";
         },
     
+    },
+    watch: {
+        loader() {
+            const l = this.loader;
+            this[l] = !this[l];
+            this.loader = null;
+        }
     }
 }
 </script>

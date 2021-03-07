@@ -28,43 +28,44 @@
 import firebase from 'firebase'
 
 export default {
-  name: 'Signup',
-  data () {
-      return {
-          username: "",
-          mailaddress: '',
-          password: '',
-          showPassword: false,
-          loader: null,
-          loading: false,
-      }
-  },
-  methods: {
-      signUp() {
-          this.loader = "loading";
-          let database = firebase.database()
-          firebase.auth().createUserWithEmailAndPassword(this.mailaddress, this.password)
-              .then(result => {
-                  console.log(result.user)
-                  database.ref("/users/").update({
-                      [result.user.uid]: {
-                        username: this.username,
-                      }
-                  });
-                  alert('アカウントを作成しました: ', this.username)
-                  this.$router.push('/')
-              })
-              .catch(error => {
-                  alert(error.code+": "+error.message)
-              })
-      }
-  },
-  watch: {
-      loader() {
-          const l = this.loader;
-          this[l] = !this[l];
-          this.loader = null;
-      }
-  }
+	name: 'Signup',
+	data () {
+		return {
+			username: "",
+			mailaddress: '',
+			password: '',
+			showPassword: false,
+			loader: null,
+			loading: false,
+		}
+	},
+	methods: {
+		signUp() {
+			this.loader = "loading";
+			let database = firebase.database()
+			firebase.auth().createUserWithEmailAndPassword(this.mailaddress, this.password)
+				.then(result => {
+					console.log(result.user)
+					database.ref("/users/").update({
+						[result.user.uid]: {
+							username: this.username,
+						}
+					});
+					alert('アカウントを作成しました: ', this.username)
+					this.$router.push('/')
+				})
+				.catch(error => {
+					this.loader = "loading";
+					alert(error.code+": "+error.message)
+				})
+		}
+	},
+	watch: {
+		loader() {
+			const l = this.loader;
+			this[l] = !this[l];
+			this.loader = null;
+		}
+	}
 }
 </script>
