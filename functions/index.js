@@ -1,4 +1,6 @@
 const Discord = require('discord.js');
+const line = require('@line/bot-sdk');
+const express = require('express');
 const functions = require('firebase-functions');
 
 // The Firebase Admin SDK to access the Firebase Realtime Database. 
@@ -8,11 +10,10 @@ admin.initializeApp();
 
 const db = admin.firestore();
 
-// const gmailEmail = functions.config().gmail.email
-// const gmailPassword = functions.config().gmail.password
 
 const url = functions.config().project.url
 const token = functions.config().discord.token
+
 
 
 exports.createUser = functions.region("asia-northeast1").auth.user().onCreate(async(userRecord, context) => {
@@ -56,19 +57,18 @@ exports.scheduledFunctionCrontab = functions.pubsub.schedule('0 * * * *')
         return null;
 });
 
-exports.sendTodoList = functions.pubsub.schedule('0 12 * * *').timeZone('Asia/Tokyo').onRun((context) => {
+exports.pushTodoDiscord = functions.pubsub.schedule('0 12 * * *').timeZone('Asia/Tokyo').onRun((context) => {
     admin.database().ref(`/users/`).once('value').then((snapshot) => {
         const key = snapshot.key
         const val = snapshot.val()
 
-        console.log("remake user object")
         let users = []
         for(let v in val) {
             let user = { id: v, username: val[v].username, todo_list: val[v].todo_list, channel_id: val[v].discord_channel_id }
             users.push(user)
         }
 
-        console.log("send TODO")
+        console.log("push TODO")
         const client = new Discord.Client();
         client.on('ready', async() => {
             console.log(`Logged in as ${client.user.tag}!`);
@@ -84,13 +84,13 @@ exports.sendTodoList = functions.pubsub.schedule('0 12 * * *').timeZone('Asia/To
                     let owner_id = channel.guild.ownerID;
                     await client.users.fetch(owner_id).then(user => {
                         console.log(user.tag);
-                        msg += "<@" + owner_id + ">\n";
+                        msg += `<@${owner_id}>\n`;
                     });
-                    msg += "**[定期通知]**\n"+username+" さん\n- 未完了のタスク\n";
+                    msg += `**[定期通知]**\n${username} さん\n\n未完了のタスク\n`;
                     let todo_list = users[i].todo_list;
                     for(let v in todo_list) {
                         if(todo_list[v].state === 0)
-                            msg += todo_list[v].text + "（" + todo_list[v].deadline + "）\n"
+                            msg += `・${todo_list[v].text} （${todo_list[v].deadline}）\n`;
                     }
                     msg += url;
                     client.channels.cache.get(channel_id).send(msg);
@@ -133,15 +133,132 @@ exports.changeChannelId = functions.database.ref('/users/{userId}/discord_channe
 })
 
 
-exports.word = functions.database.ref('/search/{userId}/word').onWrite((change, context) => {
-    const key = change.after.key
-    const val = change.after.val()
-    console.log("changed: "+key+","+val)
-    // const word = change.after.val().toLowerCase();
-    change.after.ref.parent.child(`/count/`).once('value').then((snapshot) => {
-        console.log("count: "+snapshot.key+","+snapshot.val())
+const lineConfig = {
+    channelSecret: functions.config().line.secret,
+    channelAccessToken: functions.config().line.token,
+};
+const lineApp = express();
+
+lineApp.post('/webhook', line.middleware(lineConfig), (req, res) => {
+    const events = req.body.events[0];
+    console.log(events);
+    console.log(events.type);
+    // Promise
+    // .all(events.map(handleEvent))
+    // .then((result) => {
+    //     // console.log(res.json(result));
+
+    //     const message = {
+    //         type: 'text',
+    //         text: '**[確認メッセージ]**\nこちらにTODOを通知します\n'+url
+    //     };
+    //     client.pushMessage('U20054db1cea797aec77ad94e192870e9', message)
+    //     .then(() => {
+    //         console.log("push success");
+    //     })
+    //     .catch((err) => {
+    //         console.log("push failed");
+    //     });
+    // });
+    if(events.type === "follow") {
+        const client = new line.Client(lineConfig);
+        const message = {
+            type: 'text',
+            text: `[重要]\nユーザ ID を設定してください\nユーザ ID：${events.source.userId}\n${url}`
+        };
+        client.pushMessage(events.source.userId, message)
+        .then(() => {
+            console.log("push success");
+        })
+        .catch((err) => {
+            console.log("push failed: "+err);
+        });
+    }
+});
+
+async function handleEvent(event) {
+    console.log("Line userId: "+event.source.userId);
+    const client = new line.Client(lineConfig);
+
+    if (event.type !== 'message' || event.message.type !== 'text') {
+        return Promise.resolve(null);
+    }
+
+    return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: event.message.text //実際に返信の言葉を入れる箇所
+    });
+}
+
+exports.lineApp = functions.https.onRequest(lineApp);
+
+exports.changeUserId = functions.database.ref('/users/{userId}/line_user_id').onWrite(async(change, context) => {
+    const key = change.after.key;
+    const lineUserId = change.after.val();
+    const user_id = context.params.userId;
+    let username = "";
+    await admin.database().ref(`/users/${user_id}/username`).once("value").then(async(snapshot) => {
+        username = await snapshot.val();
+    });
+    console.log("user_id: "+user_id);
+    console.log("username: "+username);
+    console.log("line_user_id: "+lineUserId);
+
+    const client = new line.Client(lineConfig);
+    const message = {
+        type: 'text',
+        text: `[確認メッセージ]\n${username} さん\nユーザ ID を設定しました\n以降毎日12時に TODO を通知します`
+    };
+    client.pushMessage(lineUserId, message)
+    .then(() => {
+        console.log("push success");
     })
-    admin.database().ref(`/count/`).once('value').then((snapshot) => {
-        console.log("admin count: "+snapshot.key+","+snapshot.val())
+    .catch((err) => {
+        console.log("push failed: "+err);
+    });
+})
+
+exports.pushTodoLine = functions.pubsub.schedule('* 22 * * *').timeZone('Asia/Tokyo').onRun((context) => {
+    admin.database().ref(`/users/`).once('value').then((snapshot) => {
+        const key = snapshot.key;
+        const val = snapshot.val();
+
+        let users = [];
+        for(let v in val) {
+            let user = { id: v, username: val[v].username, todo_list: val[v].todo_list, line_user_id: val[v].line_user_id };
+            users.push(user);
+        }
+
+        console.log("push TODO");
+        const client = new line.Client(lineConfig);
+
+        for(let i=0; i<users.length; i++) {
+            let username = users[i].username;
+            let lineUserId = users[i].line_user_id;
+            console.log(username+", "+lineUserId);
+            if(lineUserId) {
+                // メッセージ作成＆送信        
+                let msg = `[定期通知]\n${username} さん\n\n未完了のタスク\n`;
+                let todo_list = users[i].todo_list;
+                for(let v in todo_list) {
+                    if(todo_list[v].state === 0)
+                        msg += `・${todo_list[v].text} （${todo_list[v].deadline}）\n`;
+                }
+                msg += url;
+                const message = {
+                    type: 'text',
+                    text: msg
+                };
+                client.pushMessage(lineUserId, message)
+                .then(() => {
+                    console.log("push success");
+                })
+                .catch((err) => {
+                    console.log("push failed: "+err);
+                });
+            }
+        }
+        
     })
-  })
+});
+
