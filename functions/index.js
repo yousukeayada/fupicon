@@ -218,7 +218,7 @@ exports.changeUserId = functions.database.ref('/users/{userId}/line_user_id').on
     });
 })
 
-exports.pushTodoLine = functions.pubsub.schedule('* 22 * * *').timeZone('Asia/Tokyo').onRun((context) => {
+exports.pushTodoLine = functions.pubsub.schedule('0 12 * * *').timeZone('Asia/Tokyo').onRun((context) => {
     admin.database().ref(`/users/`).once('value').then((snapshot) => {
         const key = snapshot.key;
         const val = snapshot.val();
