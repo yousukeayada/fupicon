@@ -36,7 +36,7 @@ exports.createUser = functions.region("asia-northeast1").auth.user().onCreate(as
     await db.collection("mail").add(mailData);
 })
 
-exports.scheduledFunctionCrontab = functions.pubsub.schedule('0 * * * *')
+exports.scheduledFunctionCrontab = functions.pubsub.schedule('0 7 * * *')
     .timeZone('Asia/Tokyo') // Users can choose timezone - default is America/Los_Angeles
     .onRun((context) => {
         console.log('This will be run every day at **:00!');
@@ -68,7 +68,7 @@ exports.pushTodoDiscord = functions.pubsub.schedule('0 12 * * *').timeZone('Asia
             users.push(user)
         }
 
-        console.log("push TODO")
+        console.log("push TODO on Discord")
         const client = new Discord.Client();
         client.on('ready', async() => {
             console.log(`Logged in as ${client.user.tag}!`);
@@ -229,7 +229,7 @@ exports.pushTodoLine = functions.pubsub.schedule('0 12 * * *').timeZone('Asia/To
             users.push(user);
         }
 
-        console.log("push TODO");
+        console.log("push TODO on LINE");
         const client = new line.Client(lineConfig);
 
         for(let i=0; i<users.length; i++) {
