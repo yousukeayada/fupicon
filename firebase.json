@@ -2,6 +2,10 @@
   "hosting": {
     "target": "fupicon",
     "public": "dist",
+    "rewrites": [{
+      "source": "/webhook",
+      "function": "lineApp"
+    }],
     "ignore": [
       "firebase.json",
       "**/.*",
