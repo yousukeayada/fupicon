@@ -5,7 +5,7 @@
     : {{ username }}
     <v-spacer></v-spacer>
     前回ログイン: {{ lastLoginAt }}
-    <SignoutButton></SignoutButton>
+    <SignoutButton class="m-2"></SignoutButton>
     </v-row>
     <v-card class="p-3">
     <AddMessageForm></AddMessageForm>
@@ -40,7 +40,6 @@ export default {
     created() {
         // let user = firebase.auth().currentUser;
         firebase.auth().onAuthStateChanged((user) => {
-
             if(user) {
                 // 前回ログイン日時とユーザ名取得
                 let lastSignInTime = user.metadata.lastSignInTime;
