@@ -169,38 +169,41 @@ export default {
         this.messages = messages
       },
       fetchTodoList() {
-        let user = firebase.auth().currentUser;
-        // if(!user) {
-        //     alert("サインインしてください")
-        //     this.$router.push('/signin')
-        // }
-        let database = firebase.database()
-        // let todoList = [], doneList = []
-        let self = this
-        database.ref("/users/"+user.uid+"/todo_list").on("value", function(data) {
-          let todos = [], dones = []
+        // let user = firebase.auth().currentUser;
+        firebase.auth().onAuthStateChanged((user) => {
+
+          // if(!user) {
+          //     alert("サインインしてください")
+          //     this.$router.push('/signin')
+          // }
+          let database = firebase.database()
           // let todoList = [], doneList = []
-
-          // console.log("todo len: "+todoList.length)
-          const key = data.key
-          const val = data.val()
-          // const item = { id: key, text: val.text, deadline: val.deadline, state: val.state }
-          console.log("key: "+key)
-          console.log("val: ")
-
-          for(let v in val) {
-            console.log(v+", "+val[v].text)
-            const item = { id: v, text: val[v].text, deadline: val[v].deadline, state: val[v].state }
-            self.todo = item
-       
-            if(val[v].state === 0) todos.push(item)
-            else if(val[v].state === 1) dones.push(item)
-          }
-
-          self.todoList = todos
-          self.doneList = dones
-
-        })
+          let self = this
+          database.ref("/users/"+user.uid+"/todo_list").on("value", function(data) {
+            let todos = [], dones = []
+            // let todoList = [], doneList = []
+  
+            // console.log("todo len: "+todoList.length)
+            const key = data.key
+            const val = data.val()
+            // const item = { id: key, text: val.text, deadline: val.deadline, state: val.state }
+            console.log("key: "+key)
+            console.log("val: ")
+  
+            for(let v in val) {
+              console.log(v+", "+val[v].text)
+              const item = { id: v, text: val[v].text, deadline: val[v].deadline, state: val[v].state }
+              self.todo = item
+         
+              if(val[v].state === 0) todos.push(item)
+              else if(val[v].state === 1) dones.push(item)
+            }
+  
+            self.todoList = todos
+            self.doneList = dones
+  
+          })
+        });
       },
       openDialog(item) {
         this.todo = item
@@ -220,6 +223,11 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Cabin+Sketch&display=swap');
+.h3, h3 {
+  font-family: 'Cabin Sketch', cursive;
+}
+
 .v-data-table {
   /* 改行しない */
   white-space : nowrap;

@@ -38,20 +38,23 @@ export default {
         }
     },
     created() {
-        let user = firebase.auth().currentUser;
-        if(user) {
-            // 前回ログイン日時とユーザ名取得
-            let lastSignInTime = user.metadata.lastSignInTime;
-            this.lastLoginAt = new Date(lastSignInTime).toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
-            let self = this 
-            let database = firebase.database();  
-            database.ref("/users/"+user.uid+"/username").once("value", function(data) {
-                self.username = data.val()
-            })
-        } else {
-            alert("サインインしてください")
-            this.$router.push('/signin')
-        }
+        // let user = firebase.auth().currentUser;
+        firebase.auth().onAuthStateChanged((user) => {
+
+            if(user) {
+                // 前回ログイン日時とユーザ名取得
+                let lastSignInTime = user.metadata.lastSignInTime;
+                this.lastLoginAt = new Date(lastSignInTime).toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
+                let self = this 
+                let database = firebase.database();  
+                database.ref("/users/"+user.uid+"/username").once("value", function(data) {
+                    self.username = data.val()
+                })
+            } else {
+                alert("サインインしてください")
+                this.$router.push('/signin')
+            }
+        })
 
     }
 }

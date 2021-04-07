@@ -18,12 +18,13 @@ export default {
         }
     },
     created() {
-        let user = firebase.auth().currentUser
-        if (user) {
-            this.signInStatus = "ログイン済"
-        } else {
-            this.signInStatus = "未ログイン"
-        }
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                this.signInStatus = "ログイン済"
+            } else {
+                this.signInStatus = "未ログイン"
+            }
+        });
     }
 }
 </script>

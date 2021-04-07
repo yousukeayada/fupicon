@@ -61,31 +61,35 @@ export default {
     methods: {
         openDialog() {
             let self = this
-            let user = firebase.auth().currentUser;
-            if(user) {
-                let database = firebase.database();
-                database.ref("/users/"+user.uid+"/discord_channel_id").once("value").then((snapshot) => {
-                    self.channelId = snapshot.val()
-                })
-                self.dialog = true
-            } else {
-                alert("サインインしてください")
-                // this.$router.push('/signin')
-            }
+            // let user = firebase.auth().currentUser;
+            firebase.auth().onAuthStateChanged((user) => {
+                if(user) {
+                    let database = firebase.database();
+                    database.ref("/users/"+user.uid+"/discord_channel_id").once("value").then((snapshot) => {
+                        self.channelId = snapshot.val()
+                    })
+                    self.dialog = true
+                } else {
+                    alert("サインインしてください")
+                    // this.$router.push('/signin')
+                }
+            });
         },
         setChannelId() {
             let self = this
-            let user = firebase.auth().currentUser;
-            if(user) {
-                let database = firebase.database();
-                database.ref("/users/"+user.uid+"/").update({
-                    discord_channel_id: self.channelId
-                });
-                alert("チャンネル ID を設定しました："+self.channelId)
-            } else {
-                alert("サインインしてください")
-                // this.$router.push('/signin')
-            }
+            // let user = firebase.auth().currentUser;
+            firebase.auth().onAuthStateChanged((user) => {
+                if(user) {
+                    let database = firebase.database();
+                    database.ref("/users/"+user.uid+"/").update({
+                        discord_channel_id: self.channelId
+                    });
+                    alert("チャンネル ID を設定しました："+self.channelId)
+                } else {
+                    alert("サインインしてください")
+                    // this.$router.push('/signin')
+                }
+            });
         }
     }
 }

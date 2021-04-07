@@ -36,14 +36,16 @@ export default {
             if(!this.text) {
                 alert("TODO を入力してください");
             } else {
-                let user = firebase.auth().currentUser;
+                // let user = firebase.auth().currentUser;
                 let database = firebase.database();
                 // if(!this.deadline) this.deadline = "no deadline"
                 if(!this.deadline) this.deadline = ""
-                database.ref("/users/"+user.uid+"/todo_list").push({
-                    text: this.text,
-                    deadline: this.deadline,
-                    state: 0,
+                firebase.auth().onAuthStateChanged((user) => {
+                    database.ref("/users/"+user.uid+"/todo_list").push({
+                        text: this.text,
+                        deadline: this.deadline,
+                        state: 0,
+                    });
                 });
                 // this.text = "";
                 // this.deadline = null;
