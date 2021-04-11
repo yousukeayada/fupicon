@@ -52,13 +52,11 @@ export default {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Cabin+Sketch&display=swap');
-/* @import url('https://fonts.googleapis.com/css2?family=Chewy&display=swap'); */
 .h1, h1 {
-  font-family: 'Cabin Sketch', cursive;
-  /* font-family: 'Chewy', cursive; */
+    font-family: 'Cabin Sketch', cursive;
 }
 
 .h4, h4 {
-  font-family: 'Cabin Sketch', cursive;
+    font-family: 'Cabin Sketch', cursive;
 }
 </style>

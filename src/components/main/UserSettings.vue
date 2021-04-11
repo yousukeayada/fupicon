@@ -54,13 +54,9 @@ export default {
             loading: false,
         }
     },
-    created() {
-        
-    },
     methods: {
         openDialog() {
             let self = this
-            // let user = firebase.auth().currentUser;
             firebase.auth().onAuthStateChanged((user) => {
                 if(user) {
                     let database = firebase.database();
@@ -77,7 +73,6 @@ export default {
         },
         updateUser() {
             let self = this
-            // let user = firebase.auth().currentUser;
             firebase.auth().onAuthStateChanged((user) => {
                 if(user) {
                     let database = firebase.database();
@@ -101,7 +96,6 @@ export default {
         deleteUser() {
             this.loader = "loading";
             let self = this
-            // let user = firebase.auth().currentUser;
             firebase.auth().onAuthStateChanged((user) => {
                 if(user) {
                     let database = firebase.database();
@@ -118,7 +112,6 @@ export default {
                 this.loader = "loading";
             });
         },
-    
     },
     watch: {
         loader() {

@@ -1,6 +1,5 @@
 <template>
 <div>
-    <!-- <v-btn class="indigo lighten-1" @click.stop="dialog=true">Discord と連携</v-btn> -->
     <v-list-item @click.stop="openDialog">
         <v-list-item-title>Discord と連携</v-list-item-title>
     </v-list-item>
@@ -48,9 +47,6 @@
 import firebase from 'firebase'
 
 export default {
-    props: {
-        
-    },
     data() {
         return {
             dialog: false,
@@ -61,7 +57,6 @@ export default {
     methods: {
         openDialog() {
             let self = this
-            // let user = firebase.auth().currentUser;
             firebase.auth().onAuthStateChanged((user) => {
                 if(user) {
                     let database = firebase.database();
@@ -71,13 +66,11 @@ export default {
                     self.dialog = true
                 } else {
                     alert("サインインしてください")
-                    // this.$router.push('/signin')
                 }
             });
         },
         setChannelId() {
             let self = this
-            // let user = firebase.auth().currentUser;
             firebase.auth().onAuthStateChanged((user) => {
                 if(user) {
                     let database = firebase.database();
@@ -87,7 +80,6 @@ export default {
                     alert("チャンネル ID を設定しました："+self.channelId)
                 } else {
                     alert("サインインしてください")
-                    // this.$router.push('/signin')
                 }
             });
         }

@@ -2,10 +2,7 @@
 <v-form>
     <v-text-field type="text" label="TODO" v-model="text" prepend-icon="mdi-text" />
   
-    <!-- <input type="date" v-model="deadline" /><br> -->
     <DatePicker v-model="deadline"></DatePicker>
-    <!-- <p>{{ deadline }}</p> -->
-    <!-- <v-btn @click="test">確認</v-btn> -->
     <v-btn @click="addTodo" color="" class="my-2 blue accent-2">追加</v-btn>
 </v-form>
 </template>
@@ -36,9 +33,7 @@ export default {
             if(!this.text) {
                 alert("TODO を入力してください");
             } else {
-                // let user = firebase.auth().currentUser;
                 let database = firebase.database();
-                // if(!this.deadline) this.deadline = "no deadline"
                 if(!this.deadline) this.deadline = ""
                 firebase.auth().onAuthStateChanged((user) => {
                     database.ref("/users/"+user.uid+"/todo_list").push({
@@ -47,8 +42,6 @@ export default {
                         state: 0,
                     });
                 });
-                // this.text = "";
-                // this.deadline = null;
             }
         }
     }

@@ -55,12 +55,10 @@ export default {
         signIn() {
             this.loader = "loading";
             let auth = firebase.auth();
-            // auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
 
                 auth.signInWithEmailAndPassword(this.mailaddress, this.password)
                 .then(
                     user => { // eslint-disable-line no-unused-vars
-                        // console.log(user)
                         console.log('サインインに成功しました')
                         this.$router.push('/')
                     },
@@ -69,9 +67,6 @@ export default {
                         alert(err.message)
                     }
                 )
-            // }).catch((err) => {
-            //     alert(err.code+": "+err.message);
-            // });
         },
         sendPasswordResetEmail() {
             let auth = firebase.auth();

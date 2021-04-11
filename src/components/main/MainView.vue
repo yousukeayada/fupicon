@@ -1,18 +1,21 @@
 <template>
 <div class="m-3">
     <v-row class="m-3" align="center">
-    <SigninStatus></SigninStatus>
-    : {{ username }}
-    <v-spacer></v-spacer>
-    前回ログイン: {{ lastLoginAt }}
-    <SignoutButton class="m-2"></SignoutButton>
+        <SigninStatus></SigninStatus>
+        : {{ username }}
+        <v-spacer></v-spacer>
+        前回ログイン: {{ lastLoginAt }}
+        <SignoutButton class="m-2"></SignoutButton>
     </v-row>
+
     <v-card class="p-3">
-    <AddMessageForm></AddMessageForm>
+        <AddMessageForm></AddMessageForm>
     </v-card>
+
     <v-divider></v-divider>
+    
     <v-card class="p-3">
-    <MessageList></MessageList>
+        <MessageList></MessageList>
     </v-card>
 </div>
 </template>
@@ -38,7 +41,6 @@ export default {
         }
     },
     created() {
-        // let user = firebase.auth().currentUser;
         firebase.auth().onAuthStateChanged((user) => {
             if(user) {
                 // 前回ログイン日時とユーザ名取得
@@ -54,7 +56,6 @@ export default {
                 this.$router.push('/signin')
             }
         })
-
     }
 }
 </script>

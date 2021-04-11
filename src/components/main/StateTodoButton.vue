@@ -14,7 +14,6 @@ export default {
     },
     methods: {
         stateTodo() {
-            // let user = firebase.auth().currentUser;
             let database = firebase.database();
             firebase.auth().onAuthStateChanged((user) => {
                 this.item.state = 0
@@ -25,8 +24,7 @@ export default {
                         state: this.item.state,
                     }
                 });
-    
-                console.log("state todo: "+this.item.text)
+                console.log("state change todo: "+this.item.text)
             });
         }
     }

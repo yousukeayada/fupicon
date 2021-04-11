@@ -1,24 +1,5 @@
 <template>
 <div>
-    <!-- <v-list dense>
-        <v-list-item-group
-        color="primary"
-      >
-        <v-list-item
-          v-for="(item) in todoList"
-          :key="item.id"
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-account</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>{{ item.text }}</v-list-item-title>
-            <v-list-item-subtitle>{{ item.deadline }}</v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-item-group>
-    </v-list> -->
-
     <h3 class="p-2 text-white indigo lighten-3 rounded">TODO</h3>
     <v-data-table
         :headers="todoHeaders"
@@ -30,10 +11,7 @@
     >
 
         <template v-slot:item="{ item }">
-          <!-- <v-dialog v-model="dialog"> -->
-            <!-- <template v-slot:activator="{ on, attrs }"> -->
-            <!-- <tr v-on="on" v-bind="attrs"> -->
-              <tr>
+            <tr>
                 <td class="todo-cell" @click.stop="openDialog(item)">
                     {{ item.text }}
                 </td>
@@ -50,15 +28,6 @@
                   <DeleteButton :item="item" class="m-2"></DeleteButton>
                 </td>
             </tr>
-            <!-- </template> -->
-            <!-- <v-card class="p-3"> -->
-        <!-- <v-text-field type="text" label="テキストを入力してください" v-model="item.text" prepend-icon="mdi-text" /> -->
-        <!-- {{ item.text }}
-        <DatePicker @calender-click="deadline=$event"></DatePicker>
-      <v-btn>閉じる</v-btn>
-      <v-btn>更新</v-btn>
-      </v-card>
-          </v-dialog> -->
         </template>
     </v-data-table>
 
@@ -100,14 +69,10 @@
       <v-card class="p-3">
         <v-text-field type="text" label="テキストを入力してください" v-model="todo.text" prepend-icon="mdi-text" />
         <DatePicker v-model="todo.deadline"></DatePicker>
-        <!-- <v-btn @click="test2">date</v-btn> -->
         <v-btn class="m-3" @click="closeDialog">閉じる</v-btn>
         <UpdateButton class="m-3" :item="todo" @dialog-close="dialog=$event"></UpdateButton>
       </v-card>
     </v-dialog>
-
-    <!-- <v-btn @click="fetchMessages">メッセージ一覧取得</v-btn> -->
-    <!-- <v-btn @click="fetchTodoList">todo一覧取得</v-btn> -->
 </div>
 </template>
 
@@ -151,86 +116,59 @@ export default {
         this.fetchTodoList()
     },
     methods: {
-      test(item) {
-        alert("test: "+item.text)
-      },
-      test2() {
-        console.log("test2: "+this.todo.deadline+","+this.todo.text)
-      },
-      fetchMessages() {
-        let messages = []
-        let database = firebase.database();
-        database.ref("/messages/").on("child_added", function(data) {
-            const key = data.key;
-            const val = data.val();
-            console.log(key+","+val.message)
-            messages.push(val.message)
-        });
-        this.messages = messages
-      },
-      fetchTodoList() {
-        // let user = firebase.auth().currentUser;
-        firebase.auth().onAuthStateChanged((user) => {
+		test(item) {
+			alert("test: "+item.text)
+		},
+		test2() {
+			console.log("test2: "+this.todo.deadline+","+this.todo.text)
+		},
+		fetchTodoList() {
+			firebase.auth().onAuthStateChanged((user) => {
+				let database = firebase.database()
+				let self = this
+				database.ref("/users/"+user.uid+"/todo_list").on("value", function(data) {
+				let todos = [], dones = []
+				const key = data.key
+				const val = data.val()
 
-          // if(!user) {
-          //     alert("サインインしてください")
-          //     this.$router.push('/signin')
-          // }
-          let database = firebase.database()
-          // let todoList = [], doneList = []
-          let self = this
-          database.ref("/users/"+user.uid+"/todo_list").on("value", function(data) {
-            let todos = [], dones = []
-            // let todoList = [], doneList = []
-  
-            // console.log("todo len: "+todoList.length)
-            const key = data.key
-            const val = data.val()
-            // const item = { id: key, text: val.text, deadline: val.deadline, state: val.state }
-            console.log("key: "+key)
-            console.log("val: ")
-  
-            for(let v in val) {
-              console.log(v+", "+val[v].text)
-              const item = { id: v, text: val[v].text, deadline: val[v].deadline, state: val[v].state }
-              self.todo = item
-         
-              if(val[v].state === 0) todos.push(item)
-              else if(val[v].state === 1) dones.push(item)
-            }
-  
-            self.todoList = todos
-            self.doneList = dones
-  
-          })
-        });
-      },
-      openDialog(item) {
-        this.todo = item
-        this.todoPrev = item
-        console.log("dialog open: "+this.todo.text+","+this.todo.deadline)
-        this.dialog = true
-      },
-      closeDialog() {
-        console.log("dialog close: "+this.todoPrev.text+","+this.todoPrev.deadline)
-        this.todo = this.todoPrev
-        this.dialog = false
-      }
-  
+				for(let v in val) {
+					console.log(v+", "+val[v].text)
+					const item = { id: v, text: val[v].text, deadline: val[v].deadline, state: val[v].state }
+					self.todo = item
+				
+					if(val[v].state === 0) todos.push(item)
+					else if(val[v].state === 1) dones.push(item)
+				}
+
+				self.todoList = todos
+				self.doneList = dones
+				})
+			});
+		},
+		openDialog(item) {
+			this.todo = item
+			this.todoPrev = item
+			console.log("dialog open: "+this.todo.text+","+this.todo.deadline)
+			this.dialog = true
+		},
+		closeDialog() {
+			console.log("dialog close: "+this.todoPrev.text+","+this.todoPrev.deadline)
+			this.todo = this.todoPrev
+			this.dialog = false
+		}
     }
-    
 }
 </script>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Cabin+Sketch&display=swap');
 .h3, h3 {
-  font-family: 'Cabin Sketch', cursive;
+	font-family: 'Cabin Sketch', cursive;
 }
 
 .v-data-table {
-  /* 改行しない */
-  white-space : nowrap;
+	/* 改行しない */
+	white-space : nowrap;
 }
 
 /* .v-data-table-header {

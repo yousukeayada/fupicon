@@ -14,7 +14,6 @@ export default {
     },
     methods: {
         deleteItem() {
-            // let user = firebase.auth().currentUser;
             let database = firebase.database();
             firebase.auth().onAuthStateChanged((user) => {
                 database.ref("/users/"+user.uid+"/todo_list/"+this.item.id).remove();

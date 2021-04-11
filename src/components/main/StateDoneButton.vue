@@ -14,7 +14,6 @@ export default {
     },
     methods: {
         done() {
-            // let user = firebase.auth().currentUser;
             let database = firebase.database();
             let self = this;
             firebase.auth().onAuthStateChanged((user) => {
@@ -27,8 +26,7 @@ export default {
                         state: self.item.state,
                     }
                 });
-    
-                console.log("state done: "+self.item.text)
+                console.log("state change done: "+self.item.text)
             });
         }
     }

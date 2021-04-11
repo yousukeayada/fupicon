@@ -49,9 +49,6 @@
 import firebase from 'firebase'
 
 export default {
-    props: {
-        
-    },
     data() {
         return {
             dialog: false,
@@ -61,7 +58,6 @@ export default {
     methods: {
         openDialog() {
             let self = this
-            // let user = firebase.auth().currentUser;
             firebase.auth().onAuthStateChanged((user) => {
                 if(user) {
                     let database = firebase.database();
@@ -76,7 +72,6 @@ export default {
         },
         setUserId() {
             let self = this
-            // let user = firebase.auth().currentUser;
             firebase.auth().onAuthStateChanged((user) => {
                 if(user) {
                     let database = firebase.database();

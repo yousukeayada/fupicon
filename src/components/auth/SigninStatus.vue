@@ -1,11 +1,7 @@
 <template>
-        <!-- <v-btn color="info" disabled> -->
-    <!-- <v-row align-content="center" v-model="signInStatus"> -->
-        <div>
+    <div>
         {{ signInStatus }}
-        </div>
-    <!-- </v-row> -->
-        <!-- </v-btn> -->
+    </div>
 </template>
 
 <script>

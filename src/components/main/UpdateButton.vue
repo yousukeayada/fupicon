@@ -14,7 +14,6 @@ export default {
     },
     methods: {
         update() {
-            // let user = firebase.auth().currentUser;
             let database = firebase.database();
             firebase.auth().onAuthStateChanged((user) => {
                 database.ref("/users/"+user.uid+"/todo_list").update({
@@ -24,7 +23,6 @@ export default {
                         state: this.item.state,
                     }
                 });
-    
                 console.log("update item: "+this.item.text+","+this.item.deadline)
                 this.$emit("dialog-close", false)
             });
