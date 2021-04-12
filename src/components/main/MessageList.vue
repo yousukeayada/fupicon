@@ -128,7 +128,7 @@ export default {
 				let self = this
 				database.ref("/users/"+user.uid+"/todo_list").on("value", function(data) {
 				let todos = [], dones = []
-				const key = data.key
+				// const key = data.key
 				const val = data.val()
 
 				for(let v in val) {

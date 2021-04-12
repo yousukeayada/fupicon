@@ -25,11 +25,11 @@
 
 <script>
 export default {
-    data() {
-    	return {
-    		github: "https://github.com/yousukeayada/fupicon/",
-    	}
-    },
+	data() {
+		return {
+			github: "https://github.com/yousukeayada/fupicon/",
+		}
+	},
 }
 </script>
 
