@@ -14,19 +14,18 @@ export default {
     },
     methods: {
         update() {
-            let user = firebase.auth().currentUser;
             let database = firebase.database();
-
-            database.ref("/users/"+user.uid+"/todo_list").update({
-                [this.item.id]: {
-                    text: this.item.text,
-                    deadline: this.item.deadline,
-                    state: this.item.state,
-                }
+            firebase.auth().onAuthStateChanged((user) => {
+                database.ref("/users/"+user.uid+"/todo_list").update({
+                    [this.item.id]: {
+                        text: this.item.text,
+                        deadline: this.item.deadline,
+                        state: this.item.state,
+                    }
+                });
+                console.log("update item: "+this.item.text+","+this.item.deadline)
+                this.$emit("dialog-close", false)
             });
-
-            console.log("update item: "+this.item.text+","+this.item.deadline)
-            this.$emit("dialog-close", false)
         }
     }
 }

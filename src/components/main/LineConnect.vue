@@ -49,9 +49,6 @@
 import firebase from 'firebase'
 
 export default {
-    props: {
-        
-    },
     data() {
         return {
             dialog: false,
@@ -61,29 +58,31 @@ export default {
     methods: {
         openDialog() {
             let self = this
-            let user = firebase.auth().currentUser;
-            if(user) {
-                let database = firebase.database();
-                database.ref("/users/"+user.uid+"/line_user_id").once("value").then((snapshot) => {
-                    self.userId = snapshot.val()
-                })
-                self.dialog = true
-            } else {
-                alert("サインインしてください")
-            }
+            firebase.auth().onAuthStateChanged((user) => {
+                if(user) {
+                    let database = firebase.database();
+                    database.ref("/users/"+user.uid+"/line_user_id").once("value").then((snapshot) => {
+                        self.userId = snapshot.val()
+                    })
+                    self.dialog = true
+                } else {
+                    alert("サインインしてください")
+                }
+            });
         },
         setUserId() {
             let self = this
-            let user = firebase.auth().currentUser;
-            if(user) {
-                let database = firebase.database();
-                database.ref("/users/"+user.uid+"/").update({
-                    line_user_id: self.userId
-                });
-                alert("ユーザ ID を設定しました："+self.userId)
-            } else {
-                alert("サインインしてください")
-            }
+            firebase.auth().onAuthStateChanged((user) => {
+                if(user) {
+                    let database = firebase.database();
+                    database.ref("/users/"+user.uid+"/").update({
+                        line_user_id: self.userId
+                    });
+                    alert("ユーザ ID を設定しました："+self.userId)
+                } else {
+                    alert("サインインしてください")
+                }
+            });
         }
     }
 }

@@ -1,6 +1,5 @@
 <template>
 <div>
-    <!-- <v-btn class="indigo lighten-1" @click.stop="dialog=true">Discord と連携</v-btn> -->
     <v-list-item @click.stop="openDialog">
         <v-list-item-title>Discord と連携</v-list-item-title>
     </v-list-item>
@@ -48,9 +47,6 @@
 import firebase from 'firebase'
 
 export default {
-    props: {
-        
-    },
     data() {
         return {
             dialog: false,
@@ -61,31 +57,31 @@ export default {
     methods: {
         openDialog() {
             let self = this
-            let user = firebase.auth().currentUser;
-            if(user) {
-                let database = firebase.database();
-                database.ref("/users/"+user.uid+"/discord_channel_id").once("value").then((snapshot) => {
-                    self.channelId = snapshot.val()
-                })
-                self.dialog = true
-            } else {
-                alert("サインインしてください")
-                // this.$router.push('/signin')
-            }
+            firebase.auth().onAuthStateChanged((user) => {
+                if(user) {
+                    let database = firebase.database();
+                    database.ref("/users/"+user.uid+"/discord_channel_id").once("value").then((snapshot) => {
+                        self.channelId = snapshot.val()
+                    })
+                    self.dialog = true
+                } else {
+                    alert("サインインしてください")
+                }
+            });
         },
         setChannelId() {
             let self = this
-            let user = firebase.auth().currentUser;
-            if(user) {
-                let database = firebase.database();
-                database.ref("/users/"+user.uid+"/").update({
-                    discord_channel_id: self.channelId
-                });
-                alert("チャンネル ID を設定しました："+self.channelId)
-            } else {
-                alert("サインインしてください")
-                // this.$router.push('/signin')
-            }
+            firebase.auth().onAuthStateChanged((user) => {
+                if(user) {
+                    let database = firebase.database();
+                    database.ref("/users/"+user.uid+"/").update({
+                        discord_channel_id: self.channelId
+                    });
+                    alert("チャンネル ID を設定しました："+self.channelId)
+                } else {
+                    alert("サインインしてください")
+                }
+            });
         }
     }
 }

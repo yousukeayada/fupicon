@@ -54,18 +54,19 @@ export default {
     methods: {
         signIn() {
             this.loader = "loading";
-            firebase.auth().signInWithEmailAndPassword(this.mailaddress, this.password)
-            .then(
-                user => { // eslint-disable-line no-unused-vars
-                    // console.log(user)
-                    // alert('サインインに成功しました')
-                    this.$router.push('/')
-                },
-                err => {
-                    this.loader = "loading";
-                    alert(err.message)
-                }
-            )
+            let auth = firebase.auth();
+
+                auth.signInWithEmailAndPassword(this.mailaddress, this.password)
+                .then(
+                    user => { // eslint-disable-line no-unused-vars
+                        console.log('サインインに成功しました')
+                        this.$router.push('/')
+                    },
+                    err => {
+                        this.loader = "loading";
+                        alert(err.message)
+                    }
+                )
         },
         sendPasswordResetEmail() {
             let auth = firebase.auth();

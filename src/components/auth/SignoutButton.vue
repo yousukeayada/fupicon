@@ -8,15 +8,15 @@ import firebase from "firebase"
 export default {
     methods: {
         signOut() {
-            let user = firebase.auth().currentUser
-            if(user) {
-                firebase.auth().signOut().then(() => {
-                    alert("サインアウトしました")
-                    this.$router.push('/signin')
-                })
-            }
+            firebase.auth().onAuthStateChanged((user) => {
+                if(user) {
+                    firebase.auth().signOut().then(() => {
+                        alert("サインアウトしました")
+                        this.$router.push('/signin')
+                    })
+                }
+            });
         },
-    
     },
 }
 </script>

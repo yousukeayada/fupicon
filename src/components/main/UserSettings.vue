@@ -54,42 +54,41 @@ export default {
             loading: false,
         }
     },
-    created() {
-        
-    },
     methods: {
         openDialog() {
             let self = this
-            let user = firebase.auth().currentUser;
-            if(user) {
-                let database = firebase.database();
-                database.ref("/users/"+user.uid+"/username").once("value", function(data) {
-                    self.username = data.val()
-                })
-                self.mailaddress = user.email
-                self.password = user.providerData[0].providerId
-                this.dialog = true
-            } else {
-                alert("サインインしてください")
-            }
+            firebase.auth().onAuthStateChanged((user) => {
+                if(user) {
+                    let database = firebase.database();
+                    database.ref("/users/"+user.uid+"/username").once("value", function(data) {
+                        self.username = data.val()
+                    })
+                    self.mailaddress = user.email
+                    self.password = user.providerData[0].providerId
+                    this.dialog = true
+                } else {
+                    alert("サインインしてください")
+                }
+            });
         },
         updateUser() {
             let self = this
-            let user = firebase.auth().currentUser;
-            if(user) {
-                let database = firebase.database();
-                database.ref("/users/"+user.uid+"/").update({
-                    username: self.username
-                })
-                user.updateEmail(self.mailaddress).then(function() {
-
-                }).catch(function(error) {
-                    alert(error)
-                });
-                alert("アカウント情報を変更しました："+this.username)
-            } else {
-                alert("サインインしてください")
-            }
+            firebase.auth().onAuthStateChanged((user) => {
+                if(user) {
+                    let database = firebase.database();
+                    database.ref("/users/"+user.uid+"/").update({
+                        username: self.username
+                    })
+                    user.updateEmail(self.mailaddress).then(function() {
+    
+                    }).catch(function(error) {
+                        alert(error)
+                    });
+                    alert("アカウント情報を変更しました："+this.username)
+                } else {
+                    alert("サインインしてください")
+                }
+            });
         },
         openDeleteDialog() {
             this.deleteDialog = true
@@ -97,22 +96,22 @@ export default {
         deleteUser() {
             this.loader = "loading";
             let self = this
-            let user = firebase.auth().currentUser;
-            if(user) {
-                let database = firebase.database();
-                database.ref("/users/"+user.uid+"/").remove()
-                user.delete().then(function() {
-                    alert("アカウントを削除しました")
-                    self.$router.push('/signin')
-                }).catch(function(error) {
-                    alert(error)
-                })
-            } else {
-                alert("サインインしてください")
-            }
-            this.loader = "loading";
+            firebase.auth().onAuthStateChanged((user) => {
+                if(user) {
+                    let database = firebase.database();
+                    database.ref("/users/"+user.uid+"/").remove()
+                    user.delete().then(function() {
+                        alert("アカウントを削除しました")
+                        self.$router.push('/signin')
+                    }).catch(function(error) {
+                        alert(error)
+                    })
+                } else {
+                    alert("サインインしてください")
+                }
+                this.loader = "loading";
+            });
         },
-    
     },
     watch: {
         loader() {

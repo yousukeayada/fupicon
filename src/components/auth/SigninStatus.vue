@@ -1,11 +1,7 @@
 <template>
-        <!-- <v-btn color="info" disabled> -->
-    <!-- <v-row align-content="center" v-model="signInStatus"> -->
-        <div>
+    <div>
         {{ signInStatus }}
-        </div>
-    <!-- </v-row> -->
-        <!-- </v-btn> -->
+    </div>
 </template>
 
 <script>
@@ -18,12 +14,13 @@ export default {
         }
     },
     created() {
-        let user = firebase.auth().currentUser
-        if (user) {
-            this.signInStatus = "ログイン済"
-        } else {
-            this.signInStatus = "未ログイン"
-        }
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                this.signInStatus = "ログイン済"
+            } else {
+                this.signInStatus = "未ログイン"
+            }
+        });
     }
 }
 </script>
