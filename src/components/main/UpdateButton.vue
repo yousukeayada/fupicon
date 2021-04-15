@@ -16,15 +16,19 @@ export default {
         update() {
             let database = firebase.database();
             firebase.auth().onAuthStateChanged((user) => {
-                database.ref("/users/"+user.uid+"/todo_list").update({
-                    [this.item.id]: {
-                        text: this.item.text,
-                        deadline: this.item.deadline,
-                        state: this.item.state,
-                    }
-                });
-                console.log("update item: "+this.item.text+","+this.item.deadline)
-                this.$emit("dialog-close", false)
+                if(user) {
+                    database.ref("/users/"+user.uid+"/todo_list").update({
+                        [this.item.id]: {
+                            text: this.item.text,
+                            deadline: this.item.deadline,
+                            state: this.item.state,
+                        }
+                    });
+                    console.log("updated item: "+this.item.text+","+this.item.deadline);
+                    this.$emit("dialog-close", false);
+                } else {
+                    console.log("UpdateButton[update]: not user");
+                }
             });
         }
     }

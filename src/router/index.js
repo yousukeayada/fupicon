@@ -15,7 +15,8 @@ const router = new Router({
     {
         path: '/',
         name: 'main',
-        component: MainView
+        component: MainView,
+		meta: { requiresAuth: true }
     },
     {
         path: '/signin',
@@ -32,23 +33,28 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  if (requiresAuth) {
-    // このルートはログインされているかどうか認証が必要です。
-    // もしされていないならば、ログインページにリダイレクトします。
-    firebase.auth().onAuthStateChanged(function (user) {
-      if (user) {
-        next()
-      } else {
-        next({
-          path: '/signin',
-          query: { redirect: to.fullPath }
-        })
-      }
-    })
-  } else {
-    next() // next() を常に呼び出すようにしてください!
-  }
-})
+	const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+	if (requiresAuth) {
+		// このルートはログインされているかどうか認証が必要です。
+		// もしされていないならば、ログインページにリダイレクトします。
+		firebase.auth().onAuthStateChanged(function (user) {
+			if (user) {
+				console.log(`fullPath: ${to.fullPath}`);
+				next();
+			} else {
+				console.log(`fullPath: ${to.fullPath}`);
+				console.log("router: not user");
+				next({
+					path: '/signin',
+					query: { redirect: to.fullPath }
+				});
+			}
+		})
+	} else {
+		console.log(`fullPath: ${to.fullPath}`);
+		console.log("router: not requireAuth");
+		next(); // next() を常に呼び出すようにしてください!
+	}
+});
 
-export default router
+export default router;

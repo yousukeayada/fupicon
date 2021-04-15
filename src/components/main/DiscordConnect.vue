@@ -56,32 +56,34 @@ export default {
     },
     methods: {
         openDialog() {
-            let self = this
-            firebase.auth().onAuthStateChanged((user) => {
-                if(user) {
+            let self = this;
+            let user = firebase.auth().currentUser;
+            // firebase.auth().onAuthStateChanged((user) => {
+                // if(user) {
                     let database = firebase.database();
                     database.ref("/users/"+user.uid+"/discord_channel_id").once("value").then((snapshot) => {
                         self.channelId = snapshot.val()
-                    })
-                    self.dialog = true
-                } else {
-                    alert("サインインしてください")
-                }
-            });
+                    });
+                    self.dialog = true;
+            //     } else {
+            //         console.log("DiscordConnect: サインインしてください");
+            //     }
+            // });
         },
         setChannelId() {
-            let self = this
-            firebase.auth().onAuthStateChanged((user) => {
+            let self = this;
+            let user = firebase.auth().currentUser;
+            // firebase.auth().onAuthStateChanged((user) => {
                 if(user) {
                     let database = firebase.database();
                     database.ref("/users/"+user.uid+"/").update({
                         discord_channel_id: self.channelId
                     });
-                    alert("チャンネル ID を設定しました："+self.channelId)
+                    alert("チャンネル ID を設定しました："+self.channelId);
                 } else {
-                    alert("サインインしてください")
+                    console.log("DiscordConnect: サインインしてください");
                 }
-            });
+            // });
         }
     }
 }

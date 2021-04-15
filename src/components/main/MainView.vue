@@ -40,22 +40,32 @@ export default {
             lastLoginAt: null,
         }
     },
+    beforeCreate() {
+        console.log("beforeCreate MainView");
+    },
     created() {
+        console.log("created MainView");
         firebase.auth().onAuthStateChanged((user) => {
             if(user) {
                 // 前回ログイン日時とユーザ名取得
                 let lastSignInTime = user.metadata.lastSignInTime;
                 this.lastLoginAt = new Date(lastSignInTime).toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
-                let self = this 
+                let self = this;
                 let database = firebase.database();  
                 database.ref("/users/"+user.uid+"/username").once("value", function(data) {
-                    self.username = data.val()
-                })
+                    self.username = data.val();
+                });
             } else {
-                alert("サインインしてください")
-                this.$router.push('/signin')
+                console.log("MainView: サインインしてください");
+                // this.$router.push('/signin');
             }
         })
+    },
+    beforeMount() {
+        console.log("beforeMount MainView");
+    },
+    mounted() {
+        console.log("mounted MainView");
     }
 }
 </script>

@@ -59,21 +59,22 @@ export default {
                 auth.signInWithEmailAndPassword(this.mailaddress, this.password)
                 .then(
                     user => { // eslint-disable-line no-unused-vars
-                        console.log('サインインに成功しました')
-                        this.$router.push('/')
+                        console.log('サインインに成功しました');
+                        // this.$router.push(this.$route.query.redirect);
+                        this.$router.push("/");
                     },
                     err => {
                         this.loader = "loading";
-                        alert(err.message)
+                        alert(err.message);
                     }
-                )
+                );
         },
         sendPasswordResetEmail() {
             let auth = firebase.auth();
             auth.sendPasswordResetEmail(this.mailaddress).then(function() {
-                alert("メールを送信しました")
+                alert("メールを送信しました");
             }).catch(function(error) {
-                alert(error)
+                alert(error);
             });
         }
     },

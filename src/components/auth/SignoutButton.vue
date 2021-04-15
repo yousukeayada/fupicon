@@ -8,14 +8,14 @@ import firebase from "firebase"
 export default {
     methods: {
         signOut() {
-            firebase.auth().onAuthStateChanged((user) => {
-                if(user) {
+            // firebase.auth().onAuthStateChanged((user) => {
+                // if(user) {
                     firebase.auth().signOut().then(() => {
-                        alert("サインアウトしました")
-                        this.$router.push('/signin')
+                        console.log("サインアウトしました");
+                        // this.$router.push('/signin')
                     })
-                }
-            });
+                // }
+            // });
         },
     },
 }
