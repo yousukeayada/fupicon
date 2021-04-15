@@ -112,49 +112,63 @@ export default {
             todoPrev: null,
         }
     },
+    beforeCreate() {
+        console.log("beforeCreate MessageList");
+    },
     created() {
-        this.fetchTodoList()
+        console.log("created MessageList");
+        this.fetchTodoList();
+    },
+    beforeMount() {
+        console.log("beforeMount MessageList");
+    },
+    mounted() {
+        console.log("mounted MessageList");
     },
     methods: {
 		test(item) {
-			alert("test: "+item.text)
+			alert("test: "+item.text);
 		},
 		test2() {
-			console.log("test2: "+this.todo.deadline+","+this.todo.text)
+			console.log("test2: "+this.todo.deadline+","+this.todo.text);
 		},
 		fetchTodoList() {
 			firebase.auth().onAuthStateChanged((user) => {
-				let database = firebase.database()
-				let self = this
-				database.ref("/users/"+user.uid+"/todo_list").on("value", function(data) {
-				let todos = [], dones = []
-				// const key = data.key
-				const val = data.val()
+                if(user) {
+                    let database = firebase.database();
+                    let self = this;
+                    database.ref("/users/"+user.uid+"/todo_list").on("value", function(data) {
+                    let todos = [], dones = [];
+                    // const key = data.key;
+                    const val = data.val();
 
-				for(let v in val) {
-					console.log(v+", "+val[v].text)
-					const item = { id: v, text: val[v].text, deadline: val[v].deadline, state: val[v].state }
-					self.todo = item
-				
-					if(val[v].state === 0) todos.push(item)
-					else if(val[v].state === 1) dones.push(item)
-				}
+                    for(let v in val) {
+                        // console.log(v+", "+val[v].text);
+                        const item = { id: v, text: val[v].text, deadline: val[v].deadline, state: val[v].state };
+                        self.todo = item;
+                    
+                        if(val[v].state === 0) todos.push(item);
+                        else if(val[v].state === 1) dones.push(item);
+                    }
 
-				self.todoList = todos
-				self.doneList = dones
-				})
+                    self.todoList = todos;
+                    self.doneList = dones;
+                    });
+                } else {
+                    console.log("MessageList：サインインしてください");
+                }
 			});
 		},
 		openDialog(item) {
-			this.todo = item
-			this.todoPrev = item
-			console.log("dialog open: "+this.todo.text+","+this.todo.deadline)
-			this.dialog = true
+			this.todo = item;
+			this.todoPrev = item;
+			console.log("dialog open: "+this.todo.text+","+this.todo.deadline);
+			this.dialog = true;
 		},
 		closeDialog() {
-			console.log("dialog close: "+this.todoPrev.text+","+this.todoPrev.deadline)
-			this.todo = this.todoPrev
-			this.dialog = false
+			console.log("dialog close: "+this.todoPrev.text+","+this.todoPrev.deadline);
+			this.todo = this.todoPrev;
+			this.dialog = false;
 		}
     }
 }

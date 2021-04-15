@@ -16,9 +16,9 @@ export default {
     created() {
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
-                this.signInStatus = "ログイン済"
+                this.signInStatus = "ログイン済";
             } else {
-                this.signInStatus = "未ログイン"
+                this.signInStatus = "未ログイン";
             }
         });
     }

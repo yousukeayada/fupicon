@@ -16,15 +16,19 @@ export default {
         stateTodo() {
             let database = firebase.database();
             firebase.auth().onAuthStateChanged((user) => {
-                this.item.state = 0
-                database.ref("/users/"+user.uid+"/todo_list").update({
-                    [this.item.id]: {
-                        text: this.item.text,
-                        deadline: this.item.deadline,
-                        state: this.item.state,
-                    }
-                });
-                console.log("state change todo: "+this.item.text)
+                if(user) {
+                    this.item.state = 0;
+                    database.ref("/users/"+user.uid+"/todo_list").update({
+                        [this.item.id]: {
+                            text: this.item.text,
+                            deadline: this.item.deadline,
+                            state: this.item.state,
+                        }
+                    });
+                    console.log("state change todo: "+this.item.text);
+                } else {
+                    console.log("StateTodoButton[stateTodo]: not user");
+                }
             });
         }
     }

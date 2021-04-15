@@ -21,9 +21,20 @@ export default {
             deadline: "",
         }
     },
+    beforeCreate() {
+        console.log("beforeCreate AddMessageForm");
+    },
     created() {
-        this.text = ""
-        this.deadline = ""
+        console.log("created AddMessageForm");
+        // if(!this.text) console.log("not text");
+        // this.text = ""
+        // this.deadline = ""
+    },
+    beforeMount() {
+        console.log("beforeMount AddMessageForm");
+    },
+    mounted() {
+        console.log("mounted AddMessageForm");
     },
     methods: {
         test() {
@@ -36,11 +47,15 @@ export default {
                 let database = firebase.database();
                 if(!this.deadline) this.deadline = ""
                 firebase.auth().onAuthStateChanged((user) => {
-                    database.ref("/users/"+user.uid+"/todo_list").push({
-                        text: this.text,
-                        deadline: this.deadline,
-                        state: 0,
-                    });
+                    if(user) {
+                        database.ref("/users/"+user.uid+"/todo_list").push({
+                            text: this.text,
+                            deadline: this.deadline,
+                            state: 0,
+                        });
+                    } else {
+                        console.log("AddMessageForm: not user");
+                    }
                 });
             }
         }

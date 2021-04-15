@@ -64,8 +64,9 @@ export default {
     methods: {
         openDialog() {
             let self = this;
-            firebase.auth().onAuthStateChanged((user) => {
-                if(user) {
+            let user = firebase.auth().currentUser;
+            // firebase.auth().onAuthStateChanged((user) => {
+            //     if(user) {
                     let database = firebase.database();
                     database.ref("/users/"+user.uid+"/username").once("value", function(data) {
                         self.username = data.val();
@@ -75,10 +76,10 @@ export default {
                     self.currentMailaddress = self.mailaddress;
                     // self.password = user.providerData[0].providerId;
                     this.dialog = true;
-                } else {
+                // } else {
                     // alert("サインインしてください");
-                }
-            });
+                // }
+            // });
         },
         updateUser() {
             let self = this;
@@ -101,7 +102,7 @@ export default {
                     }
                     alert("アカウント情報を変更しました："+this.username);
                 } else {
-                    alert("サインインしてください");
+                    console.log("サインインしてください");
                 }
             });
         },
@@ -120,11 +121,12 @@ export default {
                     const credential = firebase.auth.EmailAuthProvider.credential(
                         user.email,
                         self.password
-                    )
+                    );
                     user.reauthenticateWithCredential(credential).then(() => {
                         let database = firebase.database();
                         database.ref("/users/"+user.uid+"/").remove();
                         user.delete().then(function() {
+                            console.log("アカウントを削除しました");
                             alert("アカウントを削除しました");
                             self.$router.push('/signin');
                         }).catch(function(error) {
@@ -134,7 +136,7 @@ export default {
                         alert(error);
                     });
                 } else {
-                    alert("サインインしてください");
+                    console.log("UserSettings: サインインしてください");
                 }
                 self.loader = "loading";
             });

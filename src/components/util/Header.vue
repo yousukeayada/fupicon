@@ -3,7 +3,7 @@
     <v-navigation-drawer app clipped v-model="drawer" class="indigo lighten-5">
         <div class=" text-grey">
         <h4 class="m-3">Menu</h4>
-        <v-list nav>
+        <v-list nav id="menu">
             <v-list-item-group>
 
                 <DiscordConnect></DiscordConnect>
@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import firebase from "firebase"
 import SignoutButton from '@/components/auth/SignoutButton'
 import DiscordConnect from '@/components/main/DiscordConnect'
 import LineConnect from '@/components/main/LineConnect'
@@ -46,6 +47,18 @@ export default {
         return {
             drawer: false,
         }
+    },
+    created() {
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                // console.log("login success: "+user.email);
+                const menu = document.getElementById("menu");
+                menu.style.display = "block";
+            } else {
+                const menu = document.getElementById("menu");
+                menu.style.display = "none";
+            }
+        });
     }
 }
 </script>
