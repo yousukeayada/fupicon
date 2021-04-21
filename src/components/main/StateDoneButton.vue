@@ -16,7 +16,8 @@ export default {
         done() {
             let database = firebase.database();
             let self = this;
-            firebase.auth().onAuthStateChanged((user) => {
+            let user = firebase.auth().currentUser;
+            // firebase.auth().onAuthStateChanged((user) => {
                 if(user) {
                     if(!self.item.deadline) self.item.deadline = "";
                     self.item.state = 1;
@@ -31,7 +32,7 @@ export default {
                 } else {
                     console.log("StateDoneButton[done]: not user");
                 }
-            });
+            // });
         }
     }
 }

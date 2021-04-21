@@ -15,10 +15,11 @@ export default {
     methods: {
         deleteItem() {
             let database = firebase.database();
-            firebase.auth().onAuthStateChanged((user) => {
+            let user = firebase.auth().currentUser;
+            // firebase.auth().onAuthStateChanged((user) => {
                 database.ref("/users/"+user.uid+"/todo_list/"+this.item.id).remove();
-                console.log("delete: "+this.item.text)
-            });
+                console.log("delete: "+this.item.text);
+            // });
         }
     }
 }
