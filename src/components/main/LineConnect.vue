@@ -8,8 +8,9 @@
         <v-card class="p-3" dark>
             <v-card-title>LINE と連携</v-card-title>
             <v-card-text>
-                LINE に毎日12時に TODO を通知します。
+                LINE と連携して毎日12時に未完了のタスク（TODO）を通知します。
             </v-card-text>
+            <v-img width="300" class="mx-auto" src="https://yousukeayada.github.io/general/assets/img/fupicon/line.png"></v-img>
 
             <v-card-title>1. Bot を友だちに追加する</v-card-title>
             <v-card-text>

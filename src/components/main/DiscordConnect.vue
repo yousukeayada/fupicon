@@ -8,7 +8,7 @@
         <v-card class="p-3" dark>
             <v-card-title>Discord と連携</v-card-title>
             <v-card-text>
-                指定した Discord チャンネルに毎日12時に TODO を通知します。
+                Discord と連携して、指定したチャンネルに毎日12時に未完了のタスク（TODO）を通知します。
             </v-card-text>
             <v-img width="300" class="mx-auto" src="https://yousukeayada.github.io/general/assets/img/fupicon/discord.png"></v-img>
             <v-card-title>1. Bot を招待する</v-card-title>
