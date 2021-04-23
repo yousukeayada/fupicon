@@ -103,7 +103,7 @@ export default {
                     }
                     alert("アカウント情報を変更しました："+this.username);
                 } else {
-                    console.log("UserSettings: サインインしてください");
+                    // console.log("UserSettings: サインインしてください");
                 }
             // });
         },
@@ -140,7 +140,7 @@ export default {
                         alert(error);
                     });
                 } else {
-                    console.log("UserSettings: サインインしてください");
+                    // console.log("UserSettings: サインインしてください");
                 }
                 self.loader = "loading";
             // });

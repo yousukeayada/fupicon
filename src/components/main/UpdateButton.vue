@@ -28,7 +28,7 @@ export default {
                     console.log("updated item: "+this.item.text+","+this.item.deadline);
                     this.$emit("dialog-close", false);
                 } else {
-                    console.log("UpdateButton[update]: not user");
+                    // console.log("UpdateButton[update]: not user");
                 }
             // });
         }

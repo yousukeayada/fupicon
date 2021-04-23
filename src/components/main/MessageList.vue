@@ -143,7 +143,6 @@ export default {
                     const val = data.val();
 
                     for(let v in val) {
-                        // console.log(v+", "+val[v].text);
                         const item = { id: v, text: val[v].text, deadline: val[v].deadline, state: val[v].state };
                         self.todo = item;
                     
@@ -155,7 +154,7 @@ export default {
                     self.doneList = dones;
                     });
                 } else {
-                    console.log("MessageList：サインインしてください");
+                    // console.log("MessageList：サインインしてください");
                 }
 			});
 		},
