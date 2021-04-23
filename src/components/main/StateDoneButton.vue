@@ -30,7 +30,7 @@ export default {
                     });
                     console.log("state change done: "+self.item.text);
                 } else {
-                    console.log("StateDoneButton[done]: not user");
+                    // console.log("StateDoneButton[done]: not user");
                 }
             // });
         }

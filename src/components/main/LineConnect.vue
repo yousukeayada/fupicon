@@ -81,7 +81,7 @@ export default {
                     });
                     alert("ユーザ ID を設定しました："+self.userId);
                 } else {
-                    console.log("サインインしてください");
+                    // console.log("LineConnect: サインインしてください");
                 }
             });
         }

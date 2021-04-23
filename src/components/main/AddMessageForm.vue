@@ -26,9 +26,6 @@ export default {
     },
     created() {
         console.log("created AddMessageForm");
-        // if(!this.text) console.log("not text");
-        // this.text = ""
-        // this.deadline = ""
     },
     beforeMount() {
         console.log("beforeMount AddMessageForm");
@@ -55,7 +52,7 @@ export default {
                             state: 0,
                         });
                     } else {
-                        console.log("AddMessageForm: not user");
+                        // console.log("AddMessageForm: not user");
                     }
                 // });
             }

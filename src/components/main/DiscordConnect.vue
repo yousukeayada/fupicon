@@ -81,7 +81,7 @@ export default {
                     });
                     alert("チャンネル ID を設定しました："+self.channelId);
                 } else {
-                    console.log("DiscordConnect: サインインしてください");
+                    // console.log("DiscordConnect: サインインしてください");
                 }
             // });
         }

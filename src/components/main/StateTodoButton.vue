@@ -28,7 +28,7 @@ export default {
                     });
                     console.log("state change todo: "+this.item.text);
                 } else {
-                    console.log("StateTodoButton[stateTodo]: not user");
+                    // console.log("StateTodoButton[stateTodo]: not user");
                 }
             // });
         }
