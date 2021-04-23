@@ -83,7 +83,8 @@ export default {
         },
         updateUser() {
             let self = this;
-            firebase.auth().onAuthStateChanged((user) => {
+            let user = firebase.auth().currentUser;
+            // firebase.auth().onAuthStateChanged((user) => {
                 if(user) {
                     // ユーザ名
                     if(self.username !== self.currentUsername) {
@@ -102,9 +103,9 @@ export default {
                     }
                     alert("アカウント情報を変更しました："+this.username);
                 } else {
-                    console.log("サインインしてください");
+                    console.log("UserSettings: サインインしてください");
                 }
-            });
+            // });
         },
         openDeleteDialog() {
             this.deleteDialog = true;
@@ -116,7 +117,8 @@ export default {
                 return;
             }
             self.loader = "loading";
-            firebase.auth().onAuthStateChanged((user) => {
+            let user = firebase.auth().currentUser;
+            // firebase.auth().onAuthStateChanged((user) => {
                 if(user) {
                     const credential = firebase.auth.EmailAuthProvider.credential(
                         user.email,
@@ -128,6 +130,8 @@ export default {
                         user.delete().then(function() {
                             console.log("アカウントを削除しました");
                             alert("アカウントを削除しました");
+                            self.password = "";
+                            self.loader = "loading";
                             self.$router.push('/signin');
                         }).catch(function(error) {
                             alert(error);
@@ -139,7 +143,7 @@ export default {
                     console.log("UserSettings: サインインしてください");
                 }
                 self.loader = "loading";
-            });
+            // });
         },
     },
     watch: {

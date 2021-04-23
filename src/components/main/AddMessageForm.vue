@@ -45,8 +45,9 @@ export default {
                 alert("TODO を入力してください");
             } else {
                 let database = firebase.database();
-                if(!this.deadline) this.deadline = ""
-                firebase.auth().onAuthStateChanged((user) => {
+                if(!this.deadline) this.deadline = "";
+                let user = firebase.auth().currentUser;
+                // firebase.auth().onAuthStateChanged((user) => {
                     if(user) {
                         database.ref("/users/"+user.uid+"/todo_list").push({
                             text: this.text,
@@ -56,7 +57,7 @@ export default {
                     } else {
                         console.log("AddMessageForm: not user");
                     }
-                });
+                // });
             }
         }
     }

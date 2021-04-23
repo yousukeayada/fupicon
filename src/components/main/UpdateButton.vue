@@ -15,7 +15,8 @@ export default {
     methods: {
         update() {
             let database = firebase.database();
-            firebase.auth().onAuthStateChanged((user) => {
+            let user = firebase.auth().currentUser;
+            // firebase.auth().onAuthStateChanged((user) => {
                 if(user) {
                     database.ref("/users/"+user.uid+"/todo_list").update({
                         [this.item.id]: {
@@ -29,7 +30,7 @@ export default {
                 } else {
                     console.log("UpdateButton[update]: not user");
                 }
-            });
+            // });
         }
     }
 }

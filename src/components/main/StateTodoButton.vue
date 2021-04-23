@@ -15,7 +15,8 @@ export default {
     methods: {
         stateTodo() {
             let database = firebase.database();
-            firebase.auth().onAuthStateChanged((user) => {
+            let user = firebase.auth().currentUser;
+            // firebase.auth().onAuthStateChanged((user) => {
                 if(user) {
                     this.item.state = 0;
                     database.ref("/users/"+user.uid+"/todo_list").update({
@@ -29,7 +30,7 @@ export default {
                 } else {
                     console.log("StateTodoButton[stateTodo]: not user");
                 }
-            });
+            // });
         }
     }
 }
